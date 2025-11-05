@@ -17,25 +17,43 @@ export default function TopUp() {
     const [scanOpen, setScanOpen] = useState(false)
     useEffect(() => {
         if (!scanOpen) return
-        let codeReader: any
+        let reader: any
+        let controls: any
         let stopped = false
         async function run() {
             try {
                 const { BrowserMultiFormatReader } = await import('@zxing/browser')
-                codeReader = new BrowserMultiFormatReader()
+                const { BarcodeFormat, DecodeHintType } = await import('@zxing/library')
+                const hints = new Map()
+                hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+                    BarcodeFormat.EAN_13,
+                    BarcodeFormat.EAN_8,
+                    BarcodeFormat.UPC_A,
+                    BarcodeFormat.UPC_E,
+                    BarcodeFormat.CODE_128,
+                    BarcodeFormat.CODE_39,
+                    BarcodeFormat.ITF,
+                    BarcodeFormat.QR_CODE,
+                ])
+                reader = new BrowserMultiFormatReader(hints)
                 if (!videoRef.current) return
-                // Pass undefined deviceId to trigger permission prompt and use default camera
-                const result = await codeReader.decodeOnceFromVideoDevice(undefined, videoRef.current)
-                if (!stopped && result) { setSku(result.getText()); setScanOpen(false) }
-            } catch (e) {
-                // ignore; user may deny permission
-            }
+                // Try default device first (prompts permissions); fall back to first device if available
+                const devices = await BrowserMultiFormatReader.listVideoInputDevices().catch(() => [])
+                const deviceId = devices?.[0]?.deviceId
+                controls = await reader.decodeFromVideoDevice(deviceId ?? undefined, videoRef.current, (result: any) => {
+                    if (!result || stopped) return
+                    setSku(result.getText())
+                    stopped = true
+                    setScanOpen(false)
+                    if (controls && typeof controls.stop === 'function') controls.stop()
+                })
+            } catch {}
         }
         run()
-        return () => { 
+        return () => {
             stopped = true
-            if (codeReader && typeof codeReader.reset === 'function') codeReader.reset()
-            else if (codeReader && typeof codeReader.stopContinuousDecode === 'function') codeReader.stopContinuousDecode()
+            if (controls && typeof controls.stop === 'function') controls.stop()
+            if (reader && typeof reader.reset === 'function') reader.reset()
         }
     }, [scanOpen])
 
