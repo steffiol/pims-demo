@@ -8,7 +8,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import { useAppState } from '../store'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 // 
 
@@ -21,6 +21,14 @@ function sentimentScore(reactions: { up: number, love: number, neutral: number, 
 export default function AllDashboard() {
 	const { state } = useAppState()
 	const items = Object.values(state.snacks)
+    const trialSku = useMemo(() => {
+        if (items.length === 0) return undefined
+        const saved = (typeof window !== 'undefined') ? localStorage.getItem('new-trial-sku') : null
+        if (saved && items.find(i => i.sku === saved)) return saved
+        const random = items[Math.floor(Math.random() * items.length)]?.sku
+        if (random && typeof window !== 'undefined') localStorage.setItem('new-trial-sku', random)
+        return random
+    }, [items])
 	const leaderboard = [...items].sort((a, b) => sentimentScore(b.stats.reactions) - sentimentScore(a.stats.reactions)).slice(0, 5)
 	const consumption = items
 		.map(i => ({ name: i.name, consumed: i.stats.consumedThisMonth || Math.round((i.batches[0]?.quantity ?? 0) * 0.2) }))
@@ -45,18 +53,18 @@ export default function AllDashboard() {
                                 </Box>
                             )}
                             <Stack spacing={2}>
-								{items.map((item, idx) => {
+                                {items.map((item) => {
 									const totalQty = item.batches.reduce((s, b) => s + b.quantity, 0)
 									const consumptionRate = item.stats.consumedThisMonth
 									const color = consumptionRate > 80 ? 'error' : consumptionRate > 40 ? 'warning' : 'success'
 									return (
 										<Stack key={item.sku} direction="row" alignItems="center" spacing={2}>
-										<Box sx={{ position: 'relative' }}>
-											<Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
-											{idx === 0 && (
-												<Chip size="small" color="secondary" label="New Trial" sx={{ position: 'absolute', top: -8, left: -8 }} />
-											)}
-										</Box>
+                                        <Box sx={{ position: 'relative' }}>
+                                            <Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
+                                            {trialSku === item.sku && (
+                                                <Chip size="small" color="secondary" label="New Trial" sx={{ position: 'absolute', top: -8, left: -8 }} />
+                                            )}
+                                        </Box>
 											<Box sx={{ flexGrow: 1 }}>
 												<Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
                                             <LinearProgress variant="determinate" value={Math.min(100, (totalQty / 150) * 100)} color={color as any} sx={{ height: 10, borderRadius: 5, mt: 0.5 }} />
