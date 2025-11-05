@@ -23,12 +23,13 @@ export default function TopUp() {
             try {
                 const { BrowserMultiFormatReader } = await import('@zxing/browser')
                 codeReader = new BrowserMultiFormatReader()
-                const devices = await BrowserMultiFormatReader.listVideoInputDevices()
-                const deviceId = devices[0]?.deviceId
-                if (!deviceId || !videoRef.current) return
-                const result = await codeReader.decodeOnceFromVideoDevice(deviceId, videoRef.current)
-                if (!stopped) { setSku(result.getText()); setScanOpen(false) }
-            } catch {}
+                if (!videoRef.current) return
+                // Pass undefined deviceId to trigger permission prompt and use default camera
+                const result = await codeReader.decodeOnceFromVideoDevice(undefined, videoRef.current)
+                if (!stopped && result) { setSku(result.getText()); setScanOpen(false) }
+            } catch (e) {
+                // ignore; user may deny permission
+            }
         }
         run()
         return () => { 
@@ -50,7 +51,7 @@ export default function TopUp() {
 			<Card>
 				<CardContent>
 					<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Top Up Snacks</Typography>
-					{scanOpen && <video ref={videoRef} style={{ width: '100%', borderRadius: 12 }} muted />}
+                    {scanOpen && <video ref={videoRef} style={{ width: '100%', borderRadius: 12 }} muted playsInline />}
 					<Stack spacing={2} sx={{ mt: 2 }}>
 						<TextField label="SKU" value={sku} onChange={(e) => setSku(e.target.value)} size="small" fullWidth 
 							InputProps={{ endAdornment: (
