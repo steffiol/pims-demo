@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Container, Typography, Stack, Chip } from '@mui/material'
+import { Button, Card, CardContent, Container, Typography, Stack } from '@mui/material'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { useRef } from 'react'
