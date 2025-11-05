@@ -1,4 +1,4 @@
-import { Container, Card, CardContent, Typography, Stack, Chip, TextField, Button, Box, LinearProgress } from '@mui/material'
+import { Container, Card, CardContent, Typography, Stack, Chip, TextField, Button, Box, LinearProgress, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import { useAppState } from '../store'
 import { useState } from 'react'
 
@@ -6,24 +6,37 @@ export default function Feedback() {
 	const { state, actions } = useAppState()
 	const [newTitle, setNewTitle] = useState('')
 	const [newDesc, setNewDesc] = useState('')
+    const [type, setType] = useState<'request' | 'poll'>('request')
+    const [optionsCsv, setOptionsCsv] = useState('Yes,No')
 	const posts = state.posts ?? []
 
 	return (
 		<Container maxWidth="lg" sx={{ py: 4 }}>
 			<Stack spacing={3}>
-				<Card>
+                <Card>
 					<CardContent>
-						<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
 						<Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
 							<Chip label="Weekly Snack Mood Poll" color="secondary" />
 							<Chip label="Auto-summary enabled" />
 							<Chip label="Giveaway Mode active when expiring" color="success" />
 						</Stack>
-						<Stack direction="row" spacing={1}>
-							<TextField size="small" label="New request title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} fullWidth />
-							<TextField size="small" label="Description" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} fullWidth />
-							<Button variant="contained" onClick={() => { if (!newTitle.trim()) return; actions.addPost({ type: 'request', title: newTitle.trim(), description: newDesc.trim() }); setNewTitle(''); setNewDesc('') }}>Post</Button>
-						</Stack>
+                        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                            <ToggleButtonGroup exclusive size="small" value={type} onChange={(_, v) => v && setType(v)}>
+                                <ToggleButton value="request">Request</ToggleButton>
+                                <ToggleButton value="poll">Poll</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Stack>
+                        <Stack direction="row" spacing={1}>
+                            <TextField size="small" label={type === 'poll' ? 'Poll title' : 'Request title'} value={newTitle} onChange={(e) => setNewTitle(e.target.value)} fullWidth />
+                            <TextField size="small" label={type === 'poll' ? 'Options (comma separated)' : 'Description'} value={type === 'poll' ? optionsCsv : newDesc} onChange={(e) => type === 'poll' ? setOptionsCsv(e.target.value) : setNewDesc(e.target.value)} fullWidth />
+                            <Button variant="contained" onClick={() => { 
+                                if (!newTitle.trim()) return; 
+                                if (type === 'poll') { const options = optionsCsv.split(',').map(s => s.trim()).filter(Boolean); actions.addPost({ type: 'poll', title: newTitle.trim(), options }) }
+                                else { actions.addPost({ type: 'request', title: newTitle.trim(), description: newDesc.trim() }) }
+                                setNewTitle(''); setNewDesc(''); setOptionsCsv('Yes,No')
+                            }}>Post</Button>
+                        </Stack>
 					</CardContent>
 				</Card>
 

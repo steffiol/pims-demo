@@ -62,7 +62,7 @@ function TopBar() {
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin/logs') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Consumption Log</MenuItem>
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin/report') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Monthly Report</MenuItem>
 					<Divider />
-					<MenuItem onClick={() => { setAnchor(null); nav('/pantry') }}><QrCodeScannerIcon sx={{ mr: 1 }} /> Pantry Auto Counter</MenuItem>
+                    <MenuItem onClick={() => { setAnchor(null); nav('/pantry') }} disabled={role !== 'admin'}><QrCodeScannerIcon sx={{ mr: 1 }} /> Pantry Auto Counter</MenuItem>
 				</Menu>
 				<Typography variant="h6" sx={{ ml: 1, fontWeight: 700 }}>{title}</Typography>
 				<Box sx={{ flexGrow: 1 }} />
@@ -105,7 +105,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<AllDashboard />} />
                     <Route path="/feedback" element={<Feedback />} />
-                    <Route path="/pantry" element={<PantryStation />} />
+                    <Route path="/pantry" element={<AdminOnly><PantryStation /></AdminOnly>} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/topup" element={<TopUp />} />
                     <Route path="/admin/edit" element={<EditQuantity />} />
@@ -115,12 +115,17 @@ export default function App() {
                 </Routes>
                 </Suspense>
                 </ErrorBoundary>
-                <Box component="footer" sx={{ textAlign: 'center', py: 3, color: 'text.secondary' }}>
-                    <Typography variant="body2">Pantry Intelligence Management System · Demo</Typography>
-                </Box>
             </Box>
         </AppStateProvider>
     )
+}
+
+function AdminOnly({ children }: { children: React.ReactNode }) {
+    const role = ((typeof window !== 'undefined' && localStorage.getItem('role')) as 'admin' | 'employee') || 'employee'
+    if (role !== 'admin') {
+        return <Container maxWidth="lg" sx={{ py: 4 }}><Typography variant="h6">Restricted</Typography><Typography color="text.secondary">Admin only feature.</Typography></Container>
+    }
+    return <>{children}</>
 }
 
 

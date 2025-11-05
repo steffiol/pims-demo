@@ -13,7 +13,7 @@ export default function ConsumptionLog() {
         name: i.name,
         consumed: i.stats.consumedThisMonth,
         added: i.stats.addedThisMonth,
-    })), [items])
+    })).sort((a,b) => b.consumed - a.consumed), [items])
 
     const expiredBatches = useMemo(() => items.flatMap(i => i.batches.filter(b => b.expiryDate && isBefore(new Date(b.expiryDate!), new Date())).map(b => ({
         sku: i.sku, name: i.name, batchId: b.id, qty: b.quantity, expiry: b.expiryDate!
@@ -41,8 +41,8 @@ export default function ConsumptionLog() {
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Fast–Slow Movement</Typography>
                             <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={movement}>
-                                    <XAxis dataKey="name" hide />
+                                    <BarChart data={movement}>
+                                    <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-15} textAnchor="end" height={40} />
                                     <YAxis hide />
                                     <RTooltip />
                                     <Bar dataKey="added" stackId="a" fill="#a78bfa" radius={[6,6,0,0]} />

@@ -40,8 +40,12 @@ function seedState(): AppState {
 	addSnack('Milo 3-in-1', 48, 'https://images.unsplash.com/photo-1587303031959-7172a18e5add?q=80&w=600')
 	addSnack('KitKat Mini', 96, 'https://images.unsplash.com/photo-1599948679845-3e4b90cb0f5a?q=80&w=600')
 	addSnack('Coffee Pods', 120, 'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=600')
-	addSnack('Nuts Mix', 40, 'https://images.unsplash.com/photo-1467453678174-768ec283a940?q=80&w=600')
-	addSnack('New Trial Snack', 20, 'https://images.unsplash.com/photo-1604908553999-9a1a5fb4d0c3?q=80&w=600')
+    addSnack('Nuts Mix', 40, 'https://images.unsplash.com/photo-1467453678174-768ec283a940?q=80&w=600')
+    // No explicit "New Trial Snack" item; we'll badge items in UI instead
+    initial.posts = [
+        { id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [], at: new Date().toISOString() },
+        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [], at: new Date().toISOString() },
+    ]
 	return initial
 }
 

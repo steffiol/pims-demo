@@ -1,6 +1,6 @@
-import { Button, Card, CardContent, Container, Stack, TextField, Typography } from '@mui/material'
+import { Button, Card, CardContent, Container, Stack, TextField, Typography, InputAdornment, IconButton } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import { v4 as uuid } from 'uuid'
+import CameraAltIcon from '@mui/icons-material/CameraAlt'
 import { useAppState } from '../store'
 import { useSnackbar } from 'notistack'
 
@@ -14,29 +14,29 @@ export default function TopUp() {
     const { actions } = useAppState()
     const { enqueueSnackbar } = useSnackbar()
 
+    const [scanOpen, setScanOpen] = useState(false)
     useEffect(() => {
+        if (!scanOpen) return
         let codeReader: any
-		let stopped = false
-		async function run() {
-			try {
+        let stopped = false
+        async function run() {
+            try {
                 const { BrowserMultiFormatReader } = await import('@zxing/browser')
                 codeReader = new BrowserMultiFormatReader()
                 const devices = await BrowserMultiFormatReader.listVideoInputDevices()
-				const deviceId = devices[0]?.deviceId
-				if (!deviceId || !videoRef.current) return
-				const result = await codeReader.decodeOnceFromVideoDevice(deviceId, videoRef.current)
-				if (!stopped) setSku(result.getText())
-			} catch {}
-		}
-		run()
+                const deviceId = devices[0]?.deviceId
+                if (!deviceId || !videoRef.current) return
+                const result = await codeReader.decodeOnceFromVideoDevice(deviceId, videoRef.current)
+                if (!stopped) { setSku(result.getText()); setScanOpen(false) }
+            } catch {}
+        }
+        run()
         return () => { 
             stopped = true
             if (codeReader && typeof codeReader.reset === 'function') codeReader.reset()
             else if (codeReader && typeof codeReader.stopContinuousDecode === 'function') codeReader.stopContinuousDecode()
         }
-	}, [])
-
-    const generateSku = () => setSku(uuid().slice(0, 8).toUpperCase())
+    }, [scanOpen])
 
     const submit = () => {
         if (!name.trim()) return
@@ -50,12 +50,17 @@ export default function TopUp() {
 			<Card>
 				<CardContent>
 					<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Top Up Snacks</Typography>
-					<video ref={videoRef} style={{ width: '100%', borderRadius: 12 }} muted />
+					{scanOpen && <video ref={videoRef} style={{ width: '100%', borderRadius: 12 }} muted />}
 					<Stack spacing={2} sx={{ mt: 2 }}>
-                        <Stack direction="row" spacing={1}>
-                            <TextField label="SKU" value={sku} onChange={(e) => setSku(e.target.value)} size="small" fullWidth />
-                            <Button onClick={generateSku} variant="outlined">Random</Button>
-                        </Stack>
+						<TextField label="SKU" value={sku} onChange={(e) => setSku(e.target.value)} size="small" fullWidth 
+							InputProps={{ endAdornment: (
+								<InputAdornment position="end">
+									<IconButton onClick={() => setScanOpen(true)}>
+										<CameraAltIcon />
+									</IconButton>
+								</InputAdornment>
+							) }}
+						/>
 						<TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} size="small" />
                         <TextField label="Image URL (optional)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} size="small" />
 						<TextField label="Quantity" type="number" value={qty} onChange={(e) => setQty(Number(e.target.value))} size="small" />

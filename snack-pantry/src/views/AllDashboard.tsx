@@ -22,7 +22,9 @@ export default function AllDashboard() {
 	const { state } = useAppState()
 	const items = Object.values(state.snacks)
 	const leaderboard = [...items].sort((a, b) => sentimentScore(b.stats.reactions) - sentimentScore(a.stats.reactions)).slice(0, 5)
-	const consumption = items.map(i => ({ name: i.name, consumed: i.stats.consumedThisMonth || Math.round((i.batches[0]?.quantity ?? 0) * 0.2) }))
+	const consumption = items
+		.map(i => ({ name: i.name, consumed: i.stats.consumedThisMonth || Math.round((i.batches[0]?.quantity ?? 0) * 0.2) }))
+		.sort((a,b) => b.consumed - a.consumed)
 	const budgetPct = Math.min(100, Math.round((state.budget.spent / state.budget.limit) * 100))
 	const [carouselIndex, setCarouselIndex] = useState(0)
 
@@ -35,7 +37,6 @@ export default function AllDashboard() {
 						<CardContent>
 							<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
 								<Typography variant="h6" sx={{ fontWeight: 700 }}>Stock Levels</Typography>
-								<Chip size="small" color="secondary" icon={<NewReleasesIcon />} label="New Trial Snack" />
 							</Stack>
                             {!hasData && (
                                 <Box sx={{ textAlign: 'center', py: 6 }}>
@@ -44,13 +45,18 @@ export default function AllDashboard() {
                                 </Box>
                             )}
                             <Stack spacing={2}>
-								{items.map(item => {
+								{items.map((item, idx) => {
 									const totalQty = item.batches.reduce((s, b) => s + b.quantity, 0)
 									const consumptionRate = item.stats.consumedThisMonth
 									const color = consumptionRate > 80 ? 'error' : consumptionRate > 40 ? 'warning' : 'success'
 									return (
 										<Stack key={item.sku} direction="row" alignItems="center" spacing={2}>
-                                        <Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
+										<Box sx={{ position: 'relative' }}>
+											<Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
+											{idx === 0 && (
+												<Chip size="small" color="secondary" label="New Trial" sx={{ position: 'absolute', top: -8, left: -8 }} />
+											)}
+										</Box>
 											<Box sx={{ flexGrow: 1 }}>
 												<Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
                                             <LinearProgress variant="determinate" value={Math.min(100, (totalQty / 150) * 100)} color={color as any} sx={{ height: 10, borderRadius: 5, mt: 0.5 }} />
@@ -84,13 +90,7 @@ export default function AllDashboard() {
 							)}
 						</CardContent>
 					</Card>
-					<Card>
-						<CardContent>
-							<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Budget Progress (MYR {state.budget.limit})</Typography>
-							<LinearProgress variant="determinate" value={budgetPct} sx={{ height: 10, borderRadius: 5, mb: 1 }} color={budgetPct > 85 ? 'error' : budgetPct > 60 ? 'warning' : 'success'} />
-							<Typography variant="body2" color="text.secondary">{budgetPct}% used</Typography>
-						</CardContent>
-					</Card>
+					{/* Budget Progress card moved to Admin screens only */}
 				</Box>
 				<Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
 					<Box>
@@ -103,7 +103,7 @@ export default function AllDashboard() {
 										<Chip label={`#${idx + 1}`} />
 										<Avatar src={i.imageUrl} variant="rounded" />
 										<Typography sx={{ flexGrow: 1 }}>{i.name}</Typography>
-										<Chip color="success" label={`${sentimentScore(i.stats.reactions)} SS`} />
+										<Chip color="success" label={`Score ${sentimentScore(i.stats.reactions)}`} />
 									</Stack>
 								))}
 							</Stack>
@@ -117,7 +117,7 @@ export default function AllDashboard() {
                             {typeof window !== 'undefined' && (window as any).ResizeObserver ? (
                                 <ResponsiveContainer width="100%" height={250}>
                                     <BarChart data={consumption}>
-                                        <XAxis dataKey="name" hide />
+                                        <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-15} textAnchor="end" height={40} />
                                         <YAxis hide />
                                         <RTooltip />
                                         <Bar dataKey="consumed" fill="#0ea5e9" radius={[6, 6, 0, 0]} isAnimationActive animationDuration={700} />
