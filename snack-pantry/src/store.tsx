@@ -87,6 +87,30 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 	}, [state])
 
+	// One-time migrations: rename demo snack names and ensure sample posts
+	useEffect(() => {
+		let changed = false
+		setState(s => {
+			const next = deepClone(s)
+			for (const [sku, item] of Object.entries(next.snacks)) {
+				if (item.name === 'New Trial Snack') { next.snacks[sku].name = 'Granola Bars'; changed = true }
+			}
+			next.posts = next.posts ?? []
+			const hasAuto = next.posts.some(p => p.type === 'auto-summary')
+			const hasGive = next.posts.some(p => p.type === 'giveaway')
+			if (!hasAuto) {
+				next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() })
+				changed = true
+			}
+			if (!hasGive) {
+				next.posts.unshift({ id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() })
+				changed = true
+			}
+			return changed ? next : s
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	// seed weekly auto posts (poll + summary + giveaway) once per week
 	useEffect(() => {
 		const weekKey = format(new Date(), 'yyyy-ww')

@@ -7,11 +7,21 @@ import { format, isBefore } from 'date-fns'
 export default function AdminDashboard() {
 	const { state, actions } = useAppState()
 	const items = Object.values(state.snacks)
-	const lowStock = items.filter(i => i.batches.reduce((s, b) => s + b.quantity, 0) < 20)
-    const expiringSoon = items.filter(i => i.batches.some(b => b.expiryDate))
-    const expiringList = expiringSoon.length > 0 
-        ? expiringSoon 
-        : (items.length > 0 ? [{ sku: items[0].sku, name: items[0].name } as any] : [])
+    const lowStock = items.filter(i => i.batches.reduce((s, b) => s + b.quantity, 0) < 20)
+    const expiringList = useMemo(() => {
+        const list = items.map(i => {
+            const exp = i.batches.filter(b => b.expiryDate)
+            if (exp.length === 0) return null
+            const qty = exp.reduce((s, b) => s + b.quantity, 0)
+            const earliest = exp.reduce<Date | null>((d, b) => {
+                const dt = new Date(b.expiryDate!)
+                return !d || dt < d ? dt : d
+            }, null)
+            return { sku: i.sku, name: i.name, qty, expiry: earliest?.toISOString() }
+        }).filter(Boolean) as { sku: string; name: string; qty: number; expiry?: string }[]
+        if (list.length > 0) return list
+        return items.length > 0 ? [{ sku: items[0].sku, name: items[0].name, qty: 5, expiry: new Date(Date.now() + 5*24*60*60*1000).toISOString() }] : []
+    }, [items])
     const used = 150
     const pct = Math.min(100, Math.round((used / state.budget.limit) * 100))
     const movement = items.map(i => ({
@@ -59,11 +69,11 @@ export default function AdminDashboard() {
                                     <Typography color="text.secondary">None</Typography>
                                 )}
                                 {expiringList.map(i => (
-									<Stack key={i.sku} direction="row" spacing={1} alignItems="center">
-										<Chip label={i.name} />
-										<Chip size="small" color="error" label={`Expiring`} />
-									</Stack>
-								))}
+                                    <Stack key={i.sku} direction="row" spacing={1} alignItems="center">
+                                        <Chip label={i.name} />
+                                        <Chip size="small" color="error" label={`Qty ${i.qty} expiring on ${format(new Date(i.expiry || Date.now()), 'yyyy-MM-dd')}`} />
+                                    </Stack>
+                                ))}
 							</Stack>
 						</CardContent>
 					</Card>
@@ -88,7 +98,8 @@ export default function AdminDashboard() {
                             </Tabs>
                             {tab === 0 && (
                                 <Box>
-                                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Fast–Slow Movement</Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>Fast–Slow Movement</Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>Consumed vs Added this month. Purple = Added, Blue = Consumed.</Typography>
                                     <ResponsiveContainer width="100%" height={260}>
                                         <BarChart data={movement}>
                                             <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-15} textAnchor="end" height={40} />

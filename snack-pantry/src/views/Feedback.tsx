@@ -18,13 +18,13 @@ export default function Feedback() {
                 <Card>
 					<CardContent>
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
+                        <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
+                            <Chip label="Weekly Snack Mood Poll" color="secondary" />
+                            <Chip label="Auto-summary enabled" />
+                            <Chip label="Giveaway Mode active when expiring" color="success" />
+                        </Stack>
                         {role === 'admin' && (
                             <>
-                                <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-                                    <Chip label="Weekly Snack Mood Poll" color="secondary" />
-                                    <Chip label="Auto-summary enabled" />
-                                    <Chip label="Giveaway Mode active when expiring" color="success" />
-                                </Stack>
                                 <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
                                     <ToggleButtonGroup exclusive size="small" value={type} onChange={(_, v) => v && setType(v)}>
                                         <ToggleButton value="request">Request</ToggleButton>
