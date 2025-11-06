@@ -50,17 +50,17 @@ export default function AllDashboard() {
                                     <Typography color="text.secondary">Ask an admin to top up snacks to get started 🎉</Typography>
                                 </Box>
                             )}
-                            <Stack spacing={2}>
+                            <Stack spacing={2} sx={{ overflow: 'visible' }}>
                                 {items.map((item) => {
 									const totalQty = item.batches.reduce((s, b) => s + b.quantity, 0)
 									const consumptionRate = item.stats.consumedThisMonth
 									const color = consumptionRate > 80 ? 'error' : consumptionRate > 40 ? 'warning' : 'success'
 									return (
 										<Stack key={item.sku} direction="row" alignItems="center" spacing={2}>
-                                        <Box sx={{ position: 'relative' }}>
+                                        <Box sx={{ position: 'relative', overflow: 'visible' }}>
                                             <Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
                                             {trialSku === item.sku && (
-                                                <Chip size="small" color="secondary" label="New Trial" sx={{ position: 'absolute', top: -8, left: -8 }} />
+                                                <Chip size="small" color="secondary" label="New" sx={{ position: 'absolute', top: -6, right: -6, zIndex: 2 }} />
                                             )}
                                         </Box>
 											<Box sx={{ flexGrow: 1 }}>
@@ -156,15 +156,21 @@ function SnackTile({ item }: { item: { sku: string; name: string; imageUrl?: str
 }
 
 function ReactionButtons({ sku }: { sku: string }) {
-	const { actions } = useAppState()
-	return (
-		<Stack direction="row" spacing={1}>
-			<Button size="small" variant="outlined" onClick={() => actions.addSnackReaction(sku, 'up')}><ThumbUpAltIcon fontSize="small" /></Button>
-			<Button size="small" variant="outlined" color="secondary" onClick={() => actions.addSnackReaction(sku, 'love')}><FavoriteIcon fontSize="small" /></Button>
-			<Button size="small" variant="outlined" onClick={() => actions.addSnackReaction(sku, 'neutral')}><SentimentNeutralIcon fontSize="small" /></Button>
-			<Button size="small" variant="outlined" onClick={() => actions.addSnackReaction(sku, 'down')}><ThumbDownAltIcon fontSize="small" /></Button>
-		</Stack>
-	)
+    const { actions } = useAppState()
+    const [selected, setSelected] = useState<'up' | 'love' | 'neutral' | 'down' | null>(null)
+    const toggle = (r: 'up' | 'love' | 'neutral' | 'down') => {
+        const next = selected === r ? null : r
+        actions.updateSnackReaction(sku, selected, next)
+        setSelected(next)
+    }
+    return (
+        <Stack direction="row" spacing={1}>
+            <Button size="small" variant={selected === 'up' ? 'contained' : 'outlined'} onClick={() => toggle('up')}><ThumbUpAltIcon fontSize="small" /></Button>
+            <Button size="small" color="secondary" variant={selected === 'love' ? 'contained' : 'outlined'} onClick={() => toggle('love')}><FavoriteIcon fontSize="small" /></Button>
+            <Button size="small" variant={selected === 'neutral' ? 'contained' : 'outlined'} onClick={() => toggle('neutral')}><SentimentNeutralIcon fontSize="small" /></Button>
+            <Button size="small" variant={selected === 'down' ? 'contained' : 'outlined'} onClick={() => toggle('down')}><ThumbDownAltIcon fontSize="small" /></Button>
+        </Stack>
+    )
 }
 
 

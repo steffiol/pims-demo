@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { AppState, SnackBatch, SnackItem, FeedbackPost, ReactionEmoji } from './models'
+import type { Reaction } from './models'
 import { MONTHLY_LIMIT, DEMO_COST_PER_UNIT } from './models'
 import { v4 as uuid } from 'uuid'
 import { format } from 'date-fns'
@@ -57,7 +58,8 @@ type Actions = {
     addComment: (postId: string, text: string) => void
     addReaction: (postId: string, emoji: ReactionEmoji) => void
     votePoll: (postId: string, option: string) => void
-    addSnackReaction: (sku: string, reaction: 'up' | 'love' | 'neutral' | 'down') => void
+    addSnackReaction: (sku: string, reaction: Reaction) => void
+    updateSnackReaction: (sku: string, prev: Reaction | null, next: Reaction | null) => void
 }
 
 const StateContext = createContext<{
@@ -240,6 +242,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                     item.stats.reactions[reaction] = (item.stats.reactions[reaction] ?? 0) + 1
                 }
                 return next
+            })
+        },
+        updateSnackReaction: (sku, prev, next) => {
+            setState(s => {
+                const nextState = deepClone(s)
+                const item = nextState.snacks[sku]
+                if (!item) return nextState
+                if (prev && item.stats.reactions[prev] > 0) item.stats.reactions[prev] -= 1
+                if (next) item.stats.reactions[next] = (item.stats.reactions[next] ?? 0) + 1
+                return nextState
             })
         },
 	}), [])
