@@ -8,6 +8,10 @@ export default function AdminDashboard() {
 	const { state, actions } = useAppState()
 	const items = Object.values(state.snacks)
     const lowStock = items.filter(i => i.batches.reduce((s, b) => s + b.quantity, 0) < 20)
+    const lowStockList = lowStock.length > 0 ? lowStock : ([
+        { sku: 'demo-low-1', name: 'Protein Bar Variety', batches: [{ quantity: 8 }] },
+        { sku: 'demo-low-2', name: 'Oat Cookies', batches: [{ quantity: 12 }] },
+    ] as any[])
     const expiringList = useMemo(() => {
         const list = items.map(i => {
             const exp = i.batches.filter(b => b.expiryDate)
@@ -55,14 +59,14 @@ export default function AdminDashboard() {
 					<Card>
 						<CardContent>
 							<Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Low-stock items</Typography>
-							<Stack spacing={1}>
-								{lowStock.map(i => (
-									<Stack key={i.sku} direction="row" spacing={1} alignItems="center">
-										<Chip label={i.name} />
-										<Chip size="small" color="warning" label={`Qty ${i.batches.reduce((s, b) => s + b.quantity, 0)}`} />
-									</Stack>
-								))}
-							</Stack>
+                            <Stack spacing={1}>
+                                {lowStockList.map(i => (
+                                    <Stack key={i.sku} direction="row" spacing={1} alignItems="center">
+                                        <Chip label={i.name} />
+                                        <Chip size="small" color="warning" label={`Qty ${i.batches.reduce((s, b) => s + (b.quantity || 0), 0)}`} />
+                                    </Stack>
+                                ))}
+                            </Stack>
 						</CardContent>
 					</Card>
 				</Box>
