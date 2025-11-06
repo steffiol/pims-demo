@@ -28,11 +28,12 @@ export default function AdminDashboard() {
     }, [items])
     const used = 150
     const pct = Math.min(100, Math.round((used / state.budget.limit) * 100))
-    const movement = items.map(i => ({
-        name: i.name,
-        consumed: i.stats.consumedThisMonth,
-        added: i.stats.addedThisMonth,
-    })).sort((a,b) => b.consumed - a.consumed)
+    const movement = items.map(i => {
+        const consumed = i.stats.consumedThisMonth || 0
+        const added = i.stats.addedThisMonth || 0
+        const speed = consumed - added * 0.2 // favour higher consumption; lightly penalise heavy top-ups
+        return { name: i.name, consumed, added, speed }
+    }).sort((a,b) => b.speed - a.speed)
     const expiredBatches = useMemo(() => items.flatMap(i => i.batches.filter(b => b.expiryDate && isBefore(new Date(b.expiryDate!), new Date())).map(b => ({
         sku: i.sku, name: i.name, batchId: b.id, qty: b.quantity, expiry: b.expiryDate!
     }))), [items])
