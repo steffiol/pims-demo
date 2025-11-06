@@ -59,12 +59,12 @@ export default function AllDashboard() {
 										<Stack key={item.sku} direction="row" alignItems="center" spacing={2}>
                                         <Box sx={{ position: 'relative', overflow: 'visible' }}>
                                             <Avatar variant="rounded" src={item.imageUrl} alt={item.name} sx={{ width: 40, height: 40 }} />
-                                            {trialSku === item.sku && (
-                                                <Chip size="small" color="secondary" label="New" sx={{ position: 'absolute', top: -6, right: -6, zIndex: 2 }} />
-                                            )}
                                         </Box>
 											<Box sx={{ flexGrow: 1 }}>
-												<Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
+                                                    {trialSku === item.sku && (<Chip size="small" color="secondary" label="New" />)}
+                                                </Stack>
                                             <LinearProgress variant="determinate" value={Math.min(100, (totalQty / 150) * 100)} color={color as any} sx={{ height: 10, borderRadius: 5, mt: 0.5 }} />
 											</Box>
 											<Chip size="small" label={`${totalQty}`} />
