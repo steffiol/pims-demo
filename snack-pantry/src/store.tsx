@@ -101,7 +101,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             const hasAuto = next.posts.some(p => p.type === 'auto-summary')
             const hasGive = next.posts.some(p => p.type === 'giveaway')
             if (enableAuto && !hasAuto) {
-                const budgetLine = `${Math.round(next.budget.spent)}/${MONTHLY_LIMIT} MYR used`
+                const budgetLine = `1500/${MONTHLY_LIMIT} MYR used`
                 next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() })
                 changed = true
             }
