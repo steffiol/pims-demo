@@ -40,10 +40,10 @@ function TopBar() {
 	const [anchor, setAnchor] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchor)
     const { mode, setMode, brand, setBrand } = useThemeControls()
-	const title = useMemo(() => {
-		if (location.pathname.startsWith('/admin')) return 'Admin Portal'
-		return 'Pantry Experience'
-	}, [location.pathname])
+    const title = useMemo(() => {
+        if (location.pathname.startsWith('/admin')) return 'Admin Portal'
+        return 'Pantry Inventory Management System'
+    }, [location.pathname])
 	return (
 		<AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
 			<Toolbar>

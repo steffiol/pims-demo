@@ -96,16 +96,25 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 				if (item.name === 'New Trial Snack') { next.snacks[sku].name = 'Granola Bars'; changed = true }
 			}
 			next.posts = next.posts ?? []
-			const hasAuto = next.posts.some(p => p.type === 'auto-summary')
-			const hasGive = next.posts.some(p => p.type === 'giveaway')
-			if (!hasAuto) {
-				next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() })
-				changed = true
-			}
-			if (!hasGive) {
-				next.posts.unshift({ id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() })
-				changed = true
-			}
+            const enableAuto = (typeof window !== 'undefined' ? localStorage.getItem('feature-auto-summary') : null) !== 'false'
+            const enableGive = (typeof window !== 'undefined' ? localStorage.getItem('feature-giveaway') : null) !== 'false'
+            const hasAuto = next.posts.some(p => p.type === 'auto-summary')
+            const hasGive = next.posts.some(p => p.type === 'giveaway')
+            if (enableAuto && !hasAuto) {
+                const budgetLine = `${Math.round(next.budget.spent)}/${MONTHLY_LIMIT} MYR used`
+                next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() })
+                changed = true
+            }
+            if (enableGive && !hasGive) {
+                const expiringSnack = Object.values(next.snacks).find(i => i.batches.some(b => b.expiryDate))
+                let desc = 'Expires soon — free today!'
+                if (expiringSnack) {
+                    const earliest = expiringSnack.batches.filter(b => b.expiryDate).map(b => new Date(b.expiryDate!)).sort((a,b)=>+a-+b)[0]
+                    if (earliest) desc = `Expires on ${format(earliest, 'yyyy-MM-dd')} — free today!`
+                }
+                next.posts.unshift({ id: uuid(), type: 'giveaway', title: `Giveaway: ${expiringSnack?.name ?? 'KitKat Mini'}`, description: desc, reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() })
+                changed = true
+            }
 			return changed ? next : s
 		})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,15 +127,21 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 		if (!flag) {
 			setState(s => {
 				const next = deepClone(s)
-				next.posts = next.posts ?? []
-				next.posts.unshift({ id: uuid(), type: 'poll', title: 'Weekly Snack Mood Poll', description: 'Sweet or Savory week?', options: ['Sweet', 'Savory'], votes: {}, reactions: { '👍': 0, '❤️': 0, '😐': 0, '👎': 0 }, comments: [], at: new Date().toISOString() })
+                next.posts = next.posts ?? []
+                const enablePoll = (typeof window !== 'undefined' ? localStorage.getItem('feature-weekly-poll') : null) !== 'false'
+                const enableAuto = (typeof window !== 'undefined' ? localStorage.getItem('feature-auto-summary') : null) !== 'false'
+                const enableGive = (typeof window !== 'undefined' ? localStorage.getItem('feature-giveaway') : null) !== 'false'
+                if (enablePoll) next.posts.unshift({ id: uuid(), type: 'poll', title: 'Weekly Snack Mood Poll', description: 'Sweet or Savory week?', options: ['Sweet', 'Savory'], votes: {}, reactions: { '👍': 0, '❤️': 0, '😐': 0, '👎': 0 }, comments: [], at: new Date().toISOString() })
 				const almostOut = Object.values(next.snacks).find(i => i.batches.reduce((s,b)=>s+b.quantity,0) < 10)
-				if (almostOut) {
-					next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `${almostOut.name} nearly finished; Coffee pods +34%`, reactions: {}, comments: [], at: new Date().toISOString() })
+                if (enableAuto && almostOut) {
+                    const budgetLine = `${Math.round(next.budget.spent)}/${MONTHLY_LIMIT} MYR used`
+                    next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `${almostOut.name} nearly finished; Coffee Pods up 34% (morning rush), Nuts Mix holding steady. Please recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [], at: new Date().toISOString() })
 				}
 				const expiring = Object.values(next.snacks).find(i => i.batches.some(b => b.expiryDate))
-				if (expiring) {
-					next.posts.unshift({ id: uuid(), type: 'giveaway', title: `Giveaway: ${expiring.name}`, description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [], at: new Date().toISOString() })
+                if (enableGive && expiring) {
+                    const earliest = expiring.batches.filter(b => b.expiryDate).map(b => new Date(b.expiryDate!)).sort((a,b)=>+a-+b)[0]
+                    const desc = earliest ? `Expires on ${format(earliest, 'yyyy-MM-dd')} — free today!` : 'Expires soon — free today!'
+                    next.posts.unshift({ id: uuid(), type: 'giveaway', title: `Giveaway: ${expiring.name}`, description: desc, reactions: { '❤️': 0, '👍': 0 }, comments: [], at: new Date().toISOString() })
 				}
 				return next
 			})

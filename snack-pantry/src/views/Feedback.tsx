@@ -10,7 +10,15 @@ export default function Feedback() {
     const [optionsCsv, setOptionsCsv] = useState('Yes,No')
     const role = (typeof window !== 'undefined' ? (localStorage.getItem('role') as string) : 'employee') || 'employee'
     const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({})
-	const posts = state.posts ?? []
+    const posts = (state.posts ?? []).filter(p => {
+        const enableAuto = (typeof window !== 'undefined' ? localStorage.getItem('feature-auto-summary') : null) !== 'false'
+        const enableGive = (typeof window !== 'undefined' ? localStorage.getItem('feature-giveaway') : null) !== 'false'
+        const enablePoll = (typeof window !== 'undefined' ? localStorage.getItem('feature-weekly-poll') : null) !== 'false'
+        if (p.type === 'auto-summary' && !enableAuto) return false
+        if (p.type === 'giveaway' && !enableGive) return false
+        if (p.type === 'poll' && p.title?.includes('Weekly Snack Mood Poll') && !enablePoll) return false
+        return true
+    })
 
 	return (
 		<Container maxWidth="lg" sx={{ py: 4 }}>
@@ -19,9 +27,9 @@ export default function Feedback() {
 					<CardContent>
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
                         <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-                            <Chip label="Weekly Snack Mood Poll" color="secondary" />
-                            <Chip label="Auto-summary enabled" />
-                            <Chip label="Giveaway Mode active when expiring" color="success" />
+                            <Chip label="Weekly Snack Mood Poll" color="secondary" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-weekly-poll') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-weekly-poll') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-weekly-poll', v); window.location.reload() } }} />
+                            <Chip label="Auto-summary enabled" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-auto-summary') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-auto-summary') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-auto-summary', v); window.location.reload() } }} />
+                            <Chip label="Giveaway Mode active when expiring" color="success" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-giveaway') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-giveaway') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-giveaway', v); window.location.reload() } }} />
                         </Stack>
                         {role === 'admin' && (
                             <>
@@ -46,10 +54,10 @@ export default function Feedback() {
 					</CardContent>
 				</Card>
 
-				{posts.map(p => {
+                        {posts.map(p => {
 					const totalVotes = p.options?.reduce((s, o) => s + (p.votes?.[o] ?? 0), 0) ?? 0
 					return (
-						<Card key={p.id}>
+                                <Card key={p.id} sx={p.type === 'giveaway' ? { borderLeft: '4px solid', borderColor: 'success.main', bgcolor: 'rgba(16,185,129,0.06)' } : undefined}>
 							<CardContent>
 								<Stack spacing={1}>
 									<Stack direction="row" spacing={1} alignItems="center">
