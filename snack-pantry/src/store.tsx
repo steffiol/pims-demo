@@ -57,6 +57,7 @@ type Actions = {
     addComment: (postId: string, text: string) => void
     addReaction: (postId: string, emoji: ReactionEmoji) => void
     votePoll: (postId: string, option: string) => void
+    addSnackReaction: (sku: string, reaction: 'up' | 'love' | 'neutral' | 'down') => void
 }
 
 const StateContext = createContext<{
@@ -231,6 +232,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 				return next
 			})
 		},
+        addSnackReaction: (sku, reaction) => {
+            setState(s => {
+                const next = deepClone(s)
+                const item = next.snacks[sku]
+                if (item) {
+                    item.stats.reactions[reaction] = (item.stats.reactions[reaction] ?? 0) + 1
+                }
+                return next
+            })
+        },
 	}), [])
 
 	const value = useMemo(() => ({ state, setState, actions }), [state, actions])

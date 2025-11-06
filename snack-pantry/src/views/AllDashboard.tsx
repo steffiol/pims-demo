@@ -6,7 +6,6 @@ import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral'
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import { useAppState } from '../store'
 import { useMemo, useState } from 'react'
 
@@ -33,7 +32,6 @@ export default function AllDashboard() {
 	const consumption = items
 		.map(i => ({ name: i.name, consumed: i.stats.consumedThisMonth || Math.round((i.batches[0]?.quantity ?? 0) * 0.2) }))
 		.sort((a,b) => b.consumed - a.consumed)
-	const budgetPct = Math.min(100, Math.round((state.budget.spent / state.budget.limit) * 100))
 	const [carouselIndex, setCarouselIndex] = useState(0)
 
     const hasData = items.length > 0
