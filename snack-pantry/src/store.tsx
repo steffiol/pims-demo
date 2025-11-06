@@ -45,7 +45,7 @@ function seedState(): AppState {
     // No explicit "New Trial Snack" item; we'll badge items in UI instead
     initial.posts = [
         { id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() },
-        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: X/Y MYR used.', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() },
+        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: MYR used 1500/2000.', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() },
     ]
 	return initial
 }
@@ -101,7 +101,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             const hasAuto = next.posts.some(p => p.type === 'auto-summary')
             const hasGive = next.posts.some(p => p.type === 'giveaway')
             if (enableAuto && !hasAuto) {
-                const budgetLine = `1500/${MONTHLY_LIMIT} MYR used`
+                const budgetLine = `MYR used 1500/${MONTHLY_LIMIT}`
                 next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() })
                 changed = true
             }
@@ -134,7 +134,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                 if (enablePoll) next.posts.unshift({ id: uuid(), type: 'poll', title: 'Weekly Snack Mood Poll', description: 'Sweet or Savory week?', options: ['Sweet', 'Savory'], votes: {}, reactions: { '👍': 0, '❤️': 0, '😐': 0, '👎': 0 }, comments: [], at: new Date().toISOString() })
 				const almostOut = Object.values(next.snacks).find(i => i.batches.reduce((s,b)=>s+b.quantity,0) < 10)
                 if (enableAuto && almostOut) {
-                    const budgetLine = `${Math.round(next.budget.spent)}/${MONTHLY_LIMIT} MYR used`
+                    const budgetLine = `MYR used 1500/${MONTHLY_LIMIT}`
                     next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [], at: new Date().toISOString() })
 				}
 				const expiring = Object.values(next.snacks).find(i => i.batches.some(b => b.expiryDate))
