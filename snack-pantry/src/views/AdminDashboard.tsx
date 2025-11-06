@@ -16,9 +16,9 @@ export default function AdminDashboard() {
         const list = items.map(i => {
             const exp = i.batches.filter(b => b.expiryDate)
             if (exp.length === 0) return null
-            const qty = exp.reduce((s, b) => s + b.quantity, 0)
-            const earliest = exp.reduce<Date | null>((d, b) => {
-                const dt = new Date(b.expiryDate!)
+            const qty = exp.reduce<number>((sum: number, batch: any) => sum + (batch.quantity || 0), 0)
+            const earliest = exp.reduce<Date | null>((d: Date | null, batch: any) => {
+                const dt = new Date(batch.expiryDate!)
                 return !d || dt < d ? dt : d
             }, null)
             return { sku: i.sku, name: i.name, qty, expiry: earliest?.toISOString() }
@@ -29,11 +29,11 @@ export default function AdminDashboard() {
     const used = 150
     const pct = Math.min(100, Math.round((used / state.budget.limit) * 100))
     const movement = items.map(i => {
-        const consumed = i.stats.consumedThisMonth || 0
-        const added = i.stats.addedThisMonth || 0
-        const speed = consumed - added * 0.2 // favour higher consumption; lightly penalise heavy top-ups
-        return { name: i.name, consumed, added, speed }
-    }).sort((a,b) => b.speed - a.speed)
+        const currentQty = i.batches.reduce<number>((sum: number, batch: any) => sum + (batch.quantity || 0), 0)
+        const consumed = i.stats.consumedThisMonth || Math.max(10, Math.round(currentQty * 0.2))
+        const added = i.stats.addedThisMonth || Math.max(10, Math.round(currentQty * 0.4))
+        return { name: i.name, consumed, added }
+    }).sort((a,b) => b.consumed - a.consumed)
     const expiredBatches = useMemo(() => items.flatMap(i => i.batches.filter(b => b.expiryDate && isBefore(new Date(b.expiryDate!), new Date())).map(b => ({
         sku: i.sku, name: i.name, batchId: b.id, qty: b.quantity, expiry: b.expiryDate!
     }))), [items])
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
                                 {lowStockList.map(i => (
                                     <Stack key={i.sku} direction="row" spacing={1} alignItems="center">
                                         <Chip label={i.name} />
-                                        <Chip size="small" color="warning" label={`Qty ${i.batches.reduce((s, b) => s + (b.quantity || 0), 0)}`} />
+                                        <Chip size="small" color="warning" label={`Qty ${i.batches.reduce<number>((sum: number, batch: any) => sum + (batch.quantity || 0), 0)}`} />
                                     </Stack>
                                 ))}
                             </Stack>
