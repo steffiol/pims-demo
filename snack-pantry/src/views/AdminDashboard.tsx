@@ -36,9 +36,15 @@ export default function AdminDashboard() {
         ? expiredBatches
         : (items.length > 0 ? [{ sku: items[0].sku, name: items[0].name, batchId: 'demo-exp', qty: 3, expiry: new Date(Date.now() - 24*60*60*1000).toISOString() }] : [])
     const recommendations = useMemo(() => items.map(i => {
-        const score = (i.stats.reactions.up + i.stats.reactions.love * 1.3) - i.stats.reactions.down * 1.2
-        const fast = i.stats.consumedThisMonth > 50
-        return { sku: i.sku, name: i.name, score, fast }
+        const pos = (i.stats.reactions.up || 0) + (i.stats.reactions.love || 0) * 1.2
+        const neg = (i.stats.reactions.down || 0) * 1.2
+        const demand = i.stats.consumedThisMonth || 0
+        let score = Math.round(demand * 0.6 + (pos - neg) * 4)
+        if (score === 0) score = Math.max(8, Math.round((demand || 10) * 0.5))
+        const recommended = Math.max(10, Math.round(demand * 1.2 + (pos - neg) * 2))
+        const fast = demand > 50
+        const reason = `Demand ${demand} units this month, ${Math.max(0, Math.round(pos))} positive vs ${Math.max(0, Math.round((i.stats.reactions.down||0)))} negative reactions`
+        return { sku: i.sku, name: i.name, score, fast, recommended, reason }
     }).sort((a,b) => b.score - a.score), [items])
     const [thresholds, setThresholds] = useState<Record<string, number>>({})
     const [tab, setTab] = useState(0)
@@ -132,11 +138,15 @@ export default function AdminDashboard() {
                                     <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Purchase Recommendation Engine</Typography>
                                     <Stack spacing={1}>
                                         {recommendations.map(r => (
-                                            <Stack key={r.sku} direction="row" spacing={1} alignItems="center">
-                                                <Chip label={r.name} />
-                                                <Chip size="small" color={r.fast ? 'success' : 'default'} label={r.fast ? 'Fast mover' : 'Normal'} />
-                                                <Chip size="small" label={`Score ${Math.round(r.score)}`} />
-                                            </Stack>
+                                            <Box key={r.sku}>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Chip label={r.name} />
+                                                    <Chip size="small" color={r.fast ? 'success' : 'default'} label={r.fast ? 'Fast mover' : 'Normal'} />
+                                                    <Chip size="small" color="primary" label={`Recommend +${r.recommended}`} />
+                                                    <Chip size="small" label={`Score ${Math.round(r.score)}`} />
+                                                </Stack>
+                                                <Typography variant="body2" color="text.secondary" sx={{ ml: 1, mt: 0.5 }}>{r.reason}</Typography>
+                                            </Box>
                                         ))}
                                     </Stack>
                                 </Box>
