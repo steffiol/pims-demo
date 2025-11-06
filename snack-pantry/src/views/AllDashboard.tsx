@@ -19,6 +19,7 @@ function sentimentScore(reactions: { up: number, love: number, neutral: number, 
 export default function AllDashboard() {
 	const { state } = useAppState()
 	const items = Object.values(state.snacks)
+    const role = (typeof window !== 'undefined' ? (localStorage.getItem('role') as string) : 'employee') || 'employee'
     const trialSku = useMemo(() => {
         if (items.length === 0) return undefined
         const saved = (typeof window !== 'undefined') ? localStorage.getItem('new-trial-sku') : null
@@ -101,11 +102,11 @@ export default function AllDashboard() {
 							<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Top 5 Most Loved Snacks This Month</Typography>
 							<Stack spacing={1}>
 								{leaderboard.map((i, idx) => (
-									<Stack key={i.sku} direction="row" spacing={2} alignItems="center">
+                                    <Stack key={i.sku} direction="row" spacing={2} alignItems="center">
 										<Chip label={`#${idx + 1}`} />
 										<Avatar src={i.imageUrl} variant="rounded" />
 										<Typography sx={{ flexGrow: 1 }}>{i.name}</Typography>
-										<Chip color="success" label={`Score ${sentimentScore(i.stats.reactions)}`} />
+                                        {role === 'admin' && (<Chip color="success" label={`Score ${sentimentScore(i.stats.reactions)}`} />)}
 									</Stack>
 								))}
 							</Stack>

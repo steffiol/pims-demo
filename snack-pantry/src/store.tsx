@@ -44,8 +44,8 @@ function seedState(): AppState {
     addSnack('Nuts Mix', 40, 'https://images.unsplash.com/photo-1467453678174-768ec283a940?q=80&w=600')
     // No explicit "New Trial Snack" item; we'll badge items in UI instead
     initial.posts = [
-        { id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [], at: new Date().toISOString() },
-        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [], at: new Date().toISOString() },
+        { id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() },
+        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() },
     ]
 	return initial
 }

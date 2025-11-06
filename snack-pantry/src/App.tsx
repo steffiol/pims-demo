@@ -53,13 +53,16 @@ function TopBar() {
 				<Menu open={open} anchorEl={anchor} onClose={() => setAnchor(null)}>
 					<MenuItem onClick={() => { setAnchor(null); nav('/') }}><DashboardIcon sx={{ mr: 1 }} /> All View Dashboard</MenuItem>
 					<MenuItem onClick={() => { setAnchor(null); nav('/feedback') }}><ForumIcon sx={{ mr: 1 }} /> Feedback & Suggestion</MenuItem>
-					<Divider />
-					<MenuItem onClick={() => { setAnchor(null); nav('/admin') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Admin Dashboard</MenuItem>
-					<MenuItem onClick={() => { setAnchor(null); nav('/admin/topup') }} disabled={role !== 'admin'}><InventoryIcon sx={{ mr: 1 }} /> Top Up Snacks</MenuItem>
-					<MenuItem onClick={() => { setAnchor(null); nav('/admin/edit') }} disabled={role !== 'admin'}><EditIcon sx={{ mr: 1 }} /> Edit Snack Quantity</MenuItem>
-                    
-					<MenuItem onClick={() => { setAnchor(null); nav('/admin/report') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Monthly Report</MenuItem>
-                    <Divider />
+					{role === 'admin' && <Divider />}
+					{role === 'admin' && (
+						<>
+							<MenuItem onClick={() => { setAnchor(null); nav('/admin') }}><AssessmentIcon sx={{ mr: 1 }} /> Admin Dashboard</MenuItem>
+							<MenuItem onClick={() => { setAnchor(null); nav('/admin/topup') }}><InventoryIcon sx={{ mr: 1 }} /> Top Up Snacks</MenuItem>
+							<MenuItem onClick={() => { setAnchor(null); nav('/admin/edit') }}><EditIcon sx={{ mr: 1 }} /> Edit Snack Quantity</MenuItem>
+							<MenuItem onClick={() => { setAnchor(null); nav('/admin/report') }}><AssessmentIcon sx={{ mr: 1 }} /> Monthly Report</MenuItem>
+						</>
+					)}
+					{role === 'admin' && <Divider />}
 				</Menu>
 				<Typography variant="h6" sx={{ ml: 1, fontWeight: 700 }}>{title}</Typography>
 				<Box sx={{ flexGrow: 1 }} />

@@ -8,6 +8,8 @@ export default function Feedback() {
 	const [newDesc, setNewDesc] = useState('')
     const [type, setType] = useState<'request' | 'poll'>('request')
     const [optionsCsv, setOptionsCsv] = useState('Yes,No')
+    const role = (typeof window !== 'undefined' ? (localStorage.getItem('role') as string) : 'employee') || 'employee'
+    const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({})
 	const posts = state.posts ?? []
 
 	return (
@@ -16,27 +18,31 @@ export default function Feedback() {
                 <Card>
 					<CardContent>
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
-						<Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-							<Chip label="Weekly Snack Mood Poll" color="secondary" />
-							<Chip label="Auto-summary enabled" />
-							<Chip label="Giveaway Mode active when expiring" color="success" />
-						</Stack>
-                        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                            <ToggleButtonGroup exclusive size="small" value={type} onChange={(_, v) => v && setType(v)}>
-                                <ToggleButton value="request">Request</ToggleButton>
-                                <ToggleButton value="poll">Poll</ToggleButton>
-                            </ToggleButtonGroup>
-                        </Stack>
-                        <Stack direction="row" spacing={1}>
-                            <TextField size="small" label={type === 'poll' ? 'Poll title' : 'Request title'} value={newTitle} onChange={(e) => setNewTitle(e.target.value)} fullWidth />
-                            <TextField size="small" label={type === 'poll' ? 'Options (comma separated)' : 'Description'} value={type === 'poll' ? optionsCsv : newDesc} onChange={(e) => type === 'poll' ? setOptionsCsv(e.target.value) : setNewDesc(e.target.value)} fullWidth />
-                            <Button variant="contained" onClick={() => { 
-                                if (!newTitle.trim()) return; 
-                                if (type === 'poll') { const options = optionsCsv.split(',').map(s => s.trim()).filter(Boolean); actions.addPost({ type: 'poll', title: newTitle.trim(), options }) }
-                                else { actions.addPost({ type: 'request', title: newTitle.trim(), description: newDesc.trim() }) }
-                                setNewTitle(''); setNewDesc(''); setOptionsCsv('Yes,No')
-                            }}>Post</Button>
-                        </Stack>
+                        {role === 'admin' && (
+                            <>
+                                <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
+                                    <Chip label="Weekly Snack Mood Poll" color="secondary" />
+                                    <Chip label="Auto-summary enabled" />
+                                    <Chip label="Giveaway Mode active when expiring" color="success" />
+                                </Stack>
+                                <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                    <ToggleButtonGroup exclusive size="small" value={type} onChange={(_, v) => v && setType(v)}>
+                                        <ToggleButton value="request">Request</ToggleButton>
+                                        <ToggleButton value="poll">Poll</ToggleButton>
+                                    </ToggleButtonGroup>
+                                </Stack>
+                                <Stack direction="row" spacing={1}>
+                                    <TextField size="small" label={type === 'poll' ? 'Poll title' : 'Request title'} value={newTitle} onChange={(e) => setNewTitle(e.target.value)} fullWidth />
+                                    <TextField size="small" label={type === 'poll' ? 'Options (comma separated)' : 'Description'} value={type === 'poll' ? optionsCsv : newDesc} onChange={(e) => type === 'poll' ? setOptionsCsv(e.target.value) : setNewDesc(e.target.value)} fullWidth />
+                                    <Button variant="contained" onClick={() => { 
+                                        if (!newTitle.trim()) return; 
+                                        if (type === 'poll') { const options = optionsCsv.split(',').map(s => s.trim()).filter(Boolean); actions.addPost({ type: 'poll', title: newTitle.trim(), options }) }
+                                        else { actions.addPost({ type: 'request', title: newTitle.trim(), description: newDesc.trim() }) }
+                                        setNewTitle(''); setNewDesc(''); setOptionsCsv('Yes,No')
+                                    }}>Post</Button>
+                                </Stack>
+                            </>
+                        )}
 					</CardContent>
 				</Card>
 
@@ -74,9 +80,10 @@ export default function Feedback() {
 										<Button size="small" onClick={() => actions.addReaction(p.id, '😐')}>😐 {p.reactions?.['😐'] ?? 0}</Button>
 										<Button size="small" onClick={() => actions.addReaction(p.id, '👎')}>👎 {p.reactions?.['👎'] ?? 0}</Button>
 									</Stack>
-									<Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-										<TextField size="small" placeholder="Add a comment" fullWidth onKeyDown={(e) => { if (e.key === 'Enter') { const target = e.target as HTMLInputElement; const v = target.value.trim(); if (v) { actions.addComment(p.id, v); target.value = '' } } }} />
-									</Stack>
+                                    <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                                        <TextField size="small" placeholder="Add a comment" fullWidth value={commentDrafts[p.id] ?? ''} onChange={(e) => setCommentDrafts(d => ({ ...d, [p.id]: e.target.value }))} />
+                                        <Button size="small" variant="outlined" onClick={() => { const v = (commentDrafts[p.id] ?? '').trim(); if (v) { actions.addComment(p.id, v); setCommentDrafts(d => ({ ...d, [p.id]: '' })) } }}>Comment</Button>
+                                    </Stack>
 									{(p.comments?.length ?? 0) > 0 && (
 										<Stack sx={{ mt: 1 }} spacing={0.5}>
 											{p.comments!.map(c => (
