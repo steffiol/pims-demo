@@ -45,7 +45,7 @@ function seedState(): AppState {
     // No explicit "New Trial Snack" item; we'll badge items in UI instead
     initial.posts = [
         { id: uuid(), type: 'giveaway', title: 'Giveaway: KitKat Mini', description: 'Expires soon — free today!', reactions: { '❤️': 0, '👍': 0 }, comments: [{ id: uuid(), user: 'System', text: 'Enjoy while stocks last!', at: new Date().toISOString() }], at: new Date().toISOString() },
-        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods +34%, Nuts Mix stable; budget on track', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() },
+        { id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: 'Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: X/Y MYR used.', reactions: {}, comments: [{ id: uuid(), user: 'System', text: 'Auto-generated summary for the week.', at: new Date().toISOString() }], at: new Date().toISOString() },
     ]
 	return initial
 }
@@ -135,7 +135,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 				const almostOut = Object.values(next.snacks).find(i => i.batches.reduce((s,b)=>s+b.quantity,0) < 10)
                 if (enableAuto && almostOut) {
                     const budgetLine = `${Math.round(next.budget.spent)}/${MONTHLY_LIMIT} MYR used`
-                    next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `${almostOut.name} nearly finished; Coffee Pods up 34% (morning rush), Nuts Mix holding steady. Please recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [], at: new Date().toISOString() })
+                    next.posts.unshift({ id: uuid(), type: 'auto-summary', title: 'Weekly Auto-Summary', description: `Coffee Pods consumption up 34% (morning rush), Nuts Mix steady. Remember to recycle pods at the pantry bin. Budget: ${budgetLine}.`, reactions: {}, comments: [], at: new Date().toISOString() })
 				}
 				const expiring = Object.values(next.snacks).find(i => i.batches.some(b => b.expiryDate))
                 if (enableGive && expiring) {

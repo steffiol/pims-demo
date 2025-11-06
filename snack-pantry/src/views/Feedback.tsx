@@ -26,11 +26,13 @@ export default function Feedback() {
                 <Card>
 					<CardContent>
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Interactive Suggestion Portal</Typography>
-                        <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
-                            <Chip label="Weekly Snack Mood Poll" color="secondary" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-weekly-poll') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-weekly-poll') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-weekly-poll', v); window.location.reload() } }} />
-                            <Chip label="Auto-summary enabled" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-auto-summary') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-auto-summary') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-auto-summary', v); window.location.reload() } }} />
-                            <Chip label="Giveaway Mode active when expiring" color="success" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-giveaway') === 'false') ? 'outlined' : 'filled'} onClick={() => { if (role === 'admin') { const v = localStorage.getItem('feature-giveaway') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-giveaway', v); window.location.reload() } }} />
-                        </Stack>
+                        {role === 'admin' && (
+                            <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
+                                <Chip label="Weekly Snack Mood Poll" color="secondary" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-weekly-poll') === 'false') ? 'outlined' : 'filled'} onClick={() => { const v = localStorage.getItem('feature-weekly-poll') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-weekly-poll', v); window.location.reload() }} />
+                                <Chip label="Auto-summary enabled" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-auto-summary') === 'false') ? 'outlined' : 'filled'} onClick={() => { const v = localStorage.getItem('feature-auto-summary') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-auto-summary', v); window.location.reload() }} />
+                                <Chip label="Giveaway Mode active when expiring" color="success" variant={(typeof window !== 'undefined' && localStorage.getItem('feature-giveaway') === 'false') ? 'outlined' : 'filled'} onClick={() => { const v = localStorage.getItem('feature-giveaway') === 'false' ? 'true' : 'false'; localStorage.setItem('feature-giveaway', v); window.location.reload() }} />
+                            </Stack>
+                        )}
                         {role === 'admin' && (
                             <>
                                 <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
