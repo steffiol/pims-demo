@@ -1,5 +1,4 @@
 import { Avatar, Box, Card, CardContent, Chip, Container, LinearProgress, Stack, Typography, IconButton, Button } from '@mui/material'
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip } from 'recharts'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral'
@@ -28,10 +27,7 @@ export default function AllDashboard() {
         if (random && typeof window !== 'undefined') localStorage.setItem('new-trial-sku', random)
         return random
     }, [items])
-	const leaderboard = [...items].sort((a, b) => sentimentScore(b.stats.reactions) - sentimentScore(a.stats.reactions)).slice(0, 5)
-	const consumption = items
-		.map(i => ({ name: i.name, consumed: i.stats.consumedThisMonth || Math.round((i.batches[0]?.quantity ?? 0) * 0.2) }))
-		.sort((a,b) => b.consumed - a.consumed)
+    const leaderboard = [...items].sort((a, b) => sentimentScore(b.stats.reactions) - sentimentScore(a.stats.reactions)).slice(0, 5)
 	const [carouselIndex, setCarouselIndex] = useState(0)
 
     const hasData = items.length > 0
@@ -63,7 +59,7 @@ export default function AllDashboard() {
 											<Box sx={{ flexGrow: 1 }}>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
-                                                    {trialSku === item.sku && (<Chip size="small" color="secondary" label="New" />)}
+                                                    {trialSku === item.sku && (<Chip size="small" color="secondary" label="New Trial Snack" />)}
                                                 </Stack>
                                             <LinearProgress variant="determinate" value={Math.min(100, (totalQty / 150) * 100)} color={color as any} sx={{ height: 10, borderRadius: 5, mt: 0.5 }} />
 											</Box>
@@ -75,8 +71,8 @@ export default function AllDashboard() {
 						</CardContent>
 					</Card>
 				</Box>
-				<Box>
-					<Card sx={{ mb: 3 }}>
+                <Box>
+                    <Card sx={{ mb: 3 }}>
 						<CardContent>
 							<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Snack Mood Reaction</Typography>
 							{items.length > 0 && (
@@ -96,9 +92,9 @@ export default function AllDashboard() {
 							)}
 						</CardContent>
 					</Card>
-					{/* Budget Progress card moved to Admin screens only */}
+                    {/* Budget Progress card moved to Admin screens only */}
 				</Box>
-				<Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+                <Box sx={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: { xs: '1fr' }, gap: 3 }}>
 					<Box>
 					<Card>
 						<CardContent>
@@ -113,25 +109,6 @@ export default function AllDashboard() {
 									</Stack>
 								))}
 							</Stack>
-						</CardContent>
-					</Card>
-					</Box>
-					<Box>
-                    <Card>
-						<CardContent>
-							<Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Fast–Slow Movement</Typography>
-                            {typeof window !== 'undefined' && (window as any).ResizeObserver ? (
-                                <ResponsiveContainer width="100%" height={250}>
-                                    <BarChart data={consumption}>
-                                        <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-15} textAnchor="end" height={40} />
-                                        <YAxis hide />
-                                        <RTooltip />
-                                        <Bar dataKey="consumed" fill="#0ea5e9" radius={[6, 6, 0, 0]} isAnimationActive animationDuration={700} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            ) : (
-                                <Typography color="text.secondary">Chart unavailable on this browser.</Typography>
-                            )}
 						</CardContent>
 					</Card>
 					</Box>
