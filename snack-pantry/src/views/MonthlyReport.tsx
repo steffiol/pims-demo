@@ -11,8 +11,14 @@ export default function MonthlyReport() {
     const items = Object.values(state.snacks)
     const lowStock = items.filter(i => i.batches.reduce((s,b)=>s+b.quantity,0) < 20)
     const expiring = items.flatMap(i => i.batches.filter(b => b.expiryDate).map(b => ({ name: i.name, expiry: b.expiryDate! })))
+    const sampleExpiring = expiring.length === 0 && items.length > 0
+        ? [{ name: items[0].name, expiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() }]
+        : []
     const balance = items.map(i => ({ name: i.name, qty: i.batches.reduce((s,b)=>s+b.quantity,0) }))
     const doNotBuy = items.filter(i => i.doNotBuy)
+    const sampleDoNotBuy = doNotBuy.length === 0 
+        ? [{ name: items[0]?.name || 'Nuts Mix', reason: 'Low sentiment and slow monthly movement' }] 
+        : []
     const forecast = items.map(i => ({ name: i.name, nextQty: Math.max(10, Math.round((i.stats.consumedThisMonth || 30) * 1.2)) }))
 	const exportPdf = async () => {
 		if (!ref.current) return
@@ -36,7 +42,9 @@ export default function MonthlyReport() {
                         </Stack>
                         <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Expiry Alerts</Typography>
                         <Stack spacing={0.5} sx={{ mb: 2 }}>
-                            {expiring.length === 0 ? <Typography color="text.secondary">None</Typography> : expiring.map(e => (<Typography key={e.name+e.expiry}>{e.name} expires {format(new Date(e.expiry), 'yyyy-MM-dd')}</Typography>))}
+                            {expiring.length === 0 && sampleExpiring.length === 0 && <Typography color="text.secondary">None</Typography>}
+                            {expiring.map(e => (<Typography key={e.name+e.expiry}>{e.name} expires {format(new Date(e.expiry), 'yyyy-MM-dd')}</Typography>))}
+                            {sampleExpiring.map(e => (<Typography key={e.name+e.expiry}>{e.name} expires {format(new Date(e.expiry), 'yyyy-MM-dd')}</Typography>))}
                         </Stack>
                         <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Low-stock Reminders</Typography>
                         <Stack spacing={0.5} sx={{ mb: 2 }}>
@@ -48,7 +56,9 @@ export default function MonthlyReport() {
                         </Stack>
                         <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Do Not Buy</Typography>
                         <Stack spacing={0.5} sx={{ mb: 2 }}>
-                            {doNotBuy.length === 0 ? <Typography color="text.secondary">None</Typography> : doNotBuy.map(i => (<Typography key={i.sku}>{i.name}</Typography>))}
+                            {doNotBuy.length === 0 && sampleDoNotBuy.length === 0 && <Typography color="text.secondary">None</Typography>}
+                            {doNotBuy.map(i => (<Typography key={i.sku}>{i.name}</Typography>))}
+                            {sampleDoNotBuy.map(s => (<Typography key={s.name}>{s.name} — {s.reason}</Typography>))}
                         </Stack>
                     </div>
 					<Button variant="contained" sx={{ mt: 2 }} onClick={exportPdf}>Export PDF</Button>

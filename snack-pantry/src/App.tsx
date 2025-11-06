@@ -5,7 +5,6 @@ import InventoryIcon from '@mui/icons-material/Inventory'
 import EditIcon from '@mui/icons-material/Edit'
 import ForumIcon from '@mui/icons-material/Forum'
 import AssessmentIcon from '@mui/icons-material/Assessment'
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import PaletteIcon from '@mui/icons-material/Palette'
@@ -16,11 +15,10 @@ import { useThemeControls } from './theme'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import AllDashboard from './views/AllDashboard'
 import Feedback from './views/Feedback'
-const PantryStation = lazy(() => import('./views/PantryStation'))
 import AdminDashboard from './views/AdminDashboard'
 const TopUp = lazy(() => import('./views/TopUp'))
 const EditQuantity = lazy(() => import('./views/EditQuantity'))
-const ConsumptionLog = lazy(() => import('./views/ConsumptionLog'))
+// Consumption Log merged into Admin Dashboard
 const MonthlyReport = lazy(() => import('./views/MonthlyReport'))
 
 function useRole() {
@@ -59,10 +57,9 @@ function TopBar() {
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Admin Dashboard</MenuItem>
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin/topup') }} disabled={role !== 'admin'}><InventoryIcon sx={{ mr: 1 }} /> Top Up Snacks</MenuItem>
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin/edit') }} disabled={role !== 'admin'}><EditIcon sx={{ mr: 1 }} /> Edit Snack Quantity</MenuItem>
-					<MenuItem onClick={() => { setAnchor(null); nav('/admin/logs') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Consumption Log</MenuItem>
+                    
 					<MenuItem onClick={() => { setAnchor(null); nav('/admin/report') }} disabled={role !== 'admin'}><AssessmentIcon sx={{ mr: 1 }} /> Monthly Report</MenuItem>
-					<Divider />
-                    <MenuItem onClick={() => { setAnchor(null); nav('/pantry') }} disabled={role !== 'admin'}><QrCodeScannerIcon sx={{ mr: 1 }} /> Pantry Auto Counter</MenuItem>
+                    <Divider />
 				</Menu>
 				<Typography variant="h6" sx={{ ml: 1, fontWeight: 700 }}>{title}</Typography>
 				<Box sx={{ flexGrow: 1 }} />
@@ -105,11 +102,11 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<AllDashboard />} />
                     <Route path="/feedback" element={<Feedback />} />
-                    <Route path="/pantry" element={<AdminOnly><PantryStation /></AdminOnly>} />
+                    
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/topup" element={<TopUp />} />
                     <Route path="/admin/edit" element={<EditQuantity />} />
-                    <Route path="/admin/logs" element={<ConsumptionLog />} />
+                    
                     <Route path="/admin/report" element={<MonthlyReport />} />
                     <Route path="*" element={<Placeholder title="Not Found"><Typography>Use the menu to navigate.</Typography></Placeholder>} />
                 </Routes>
@@ -120,12 +117,6 @@ export default function App() {
     )
 }
 
-function AdminOnly({ children }: { children: React.ReactNode }) {
-    const role = ((typeof window !== 'undefined' && localStorage.getItem('role')) as 'admin' | 'employee') || 'employee'
-    if (role !== 'admin') {
-        return <Container maxWidth="lg" sx={{ py: 4 }}><Typography variant="h6">Restricted</Typography><Typography color="text.secondary">Admin only feature.</Typography></Container>
-    }
-    return <>{children}</>
-}
+ 
 
 
