@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 18px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .stroke{fill:#fff;stroke:#111;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .muted{fill:#f5f5f5}
+    </style>
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1024" class="muted"/>
+  <!-- Browser chrome (Windows style) -->
+  <rect x="16" y="16" rx="6" ry="6" width="1408" height="56" class="stroke" fill="#e6e6e6" filter="url(#sketch)"/>
+  <rect x="32" y="28" rx="6" ry="6" width="1100" height="32" class="stroke" fill="#fff" filter="url(#sketch)"/>
+  <g transform="translate(1270,20)" filter="url(#sketch)">
+    <rect x="0" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="44" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="88" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <line x1="12" y1="20" x2="28" y2="20" stroke="#111" stroke-width="2"/>
+    <rect x="56" y="10" width="16" height="16" stroke="#111" fill="none"/>
+    <line x1="100" y1="12" x2="116" y2="28" stroke="#111" stroke-width="2"/>
+    <line x1="116" y1="12" x2="100" y2="28" stroke="#111" stroke-width="2"/>
+  </g>
+  <text x="32" y="108" class="title">Snacks</text>
+
+  <!-- Toolbar -->
+  <rect x="32" y="132" rx="8" ry="8" width="560" height="44" class="stroke" filter="url(#sketch)"/>
+  <text x="44" y="160" class="label">Search</text>
+  <rect x="612" y="132" rx="8" ry="8" width="160" height="44" class="stroke" fill="#f0f7ff" filter="url(#sketch)"/>
+  <text x="624" y="160" class="label">Add snack</text>
+
+  <!-- Table -->
+  <rect x="32" y="192" rx="10" ry="10" width="1308" height="720" class="stroke" filter="url(#sketch)"/>
+  <text x="44" y="220" class="label">Snacks table</text>
+  <line x1="32" y1="256" x2="1340" y2="256" stroke="#111" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="44" y="282" class="label">Name</text>
+  <text x="314" y="282" class="label">Expiry</text>
+  <text x="534" y="282" class="label">Type</text>
+  <text x="694" y="282" class="label">Purchased</text>
+  <text x="914" y="282" class="label">Current</text>
+  <text x="1084" y="282" class="label">Actions</text>
+
+  <!-- Trash icons -->
+  <g transform="translate(1280,300)">
+    <rect x="0" y="0" width="28" height="28" rx="6" ry="6" class="stroke" fill="#fff"/>
+    <rect x="9" y="10" width="10" height="12" fill="#fff" stroke="#111" stroke-width="2"/>
+    <line x1="7" y1="10" x2="21" y2="10" stroke="#111" stroke-width="2"/>
+    <line x1="12" y1="14" x2="12" y2="20" stroke="#111" stroke-width="2"/>
+    <line x1="16" y1="14" x2="16" y2="20" stroke="#111" stroke-width="2"/>
+  </g>
+
+  <!-- Note -->
+  <g transform="translate(1020,160) rotate(-4)">
+    <rect x="0" y="0" width="260" height="80" rx="6" ry="6" fill="#fff6c2" stroke="#c9b65a" stroke-width="2"/>
+    <polygon points="240,0 260,0 260,20" fill="#f7d37b"/>
+    <text x="12" y="26" class="label">Note: Trash icon denotes delete</text>
+    <text x="12" y="48" class="label">Modal used for edits</text>
+  </g>
+</svg>
+
+

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 18px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .stroke{fill:#fff;stroke:#111;stroke-width:2}
+      .muted{fill:#f5f5f5}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1024" class="muted"/>
+  <!-- Browser chrome -->
+  <rect x="16" y="16" rx="12" ry="12" width="1408" height="56" class="stroke" fill="#efefef"/>
+  <circle cx="40" cy="44" r="8" fill="#ff5f56"/>
+  <circle cx="64" cy="44" r="8" fill="#ffbd2e"/>
+  <circle cx="88" cy="44" r="8" fill="#27c93f"/>
+  <rect x="120" y="28" rx="8" ry="8" width="1000" height="32" class="stroke" fill="#fff"/>
+  <rect x="1134" y="28" rx="8" ry="8" width="120" height="32" class="stroke" fill="#fff"/>
+  <text x="32" y="108" class="title">Settings</text>
+
+  <rect x="32" y="132" rx="8" ry="8" width="620" height="64" class="stroke"/>
+  <text x="44" y="104" class="label">Lead times (tags)</text>
+  <rect x="32" y="212" rx="8" ry="8" width="620" height="64" class="stroke"/>
+  <text x="44" y="184" class="label">Recipients (emails)</text>
+  <rect x="32" y="292" rx="8" ry="8" width="620" height="64" class="stroke"/>
+  <text x="44" y="264" class="label">Email frequency</text>
+  <rect x="32" y="372" rx="8" ry="8" width="620" height="64" class="stroke"/>
+  <text x="44" y="344" class="label">Low stock threshold</text>
+  <rect x="32" y="452" rx="8" ry="8" width="620" height="64" class="stroke"/>
+  <text x="44" y="424" class="label">Purchased by default</text>
+
+  <rect x="32" y="532" rx="8" ry="8" width="180" height="44" class="stroke" fill="#e8f7e9"/>
+  <text x="44" y="560" class="label">Save settings</text>
+
+  <!-- Sticky -->
+  <g transform="translate(700,160) rotate(-3)">
+    <rect x="0" y="0" width="280" height="80" rx="6" ry="6" fill="#fff6c2" stroke="#c9b65a" stroke-width="2"/>
+    <polygon points="260,0 280,0 280,20" fill="#f7d37b"/>
+    <text x="12" y="28" class="label">Per-snack overrides</text>
+    <text x="12" y="50" class="label">can be added later</text>
+  </g>
+</svg>
+
+

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 20px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .ellipse{fill:#fff;stroke:#111;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .actor{stroke:#111;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="32" y="48" class="title">SnackWatch Use Case Diagram</text>
+
+  <!-- System boundary -->
+  <rect x="220" y="80" width="1000" height="760" fill="#fafafa" stroke="#111" stroke-width="2" rx="12" ry="12" filter="url(#sketch)"/>
+  <text x="240" y="110" class="label">Pantry Inventory Management System</text>
+
+  <!-- Actors -->
+  <g id="admin" transform="translate(80,220)" filter="url(#sketch)">
+    <circle cx="40" cy="0" r="20" class="actor" fill="none"/>
+    <line x1="40" y1="20" x2="40" y2="90" class="actor"/>
+    <line x1="10" y1="50" x2="70" y2="50" class="actor"/>
+    <line x1="40" y1="90" x2="10" y2="130" class="actor"/>
+    <line x1="40" y1="90" x2="70" y2="130" class="actor"/>
+    <text x="-4" y="160" class="label">Admin</text>
+  </g>
+
+  <g id="staff" transform="translate(1300,220)" filter="url(#sketch)">
+    <circle cx="40" cy="0" r="20" class="actor" fill="none"/>
+    <line x1="40" y1="20" x2="40" y2="90" class="actor"/>
+    <line x1="10" y1="50" x2="70" y2="50" class="actor"/>
+    <line x1="40" y1="90" x2="10" y2="130" class="actor"/>
+    <line x1="40" y1="90" x2="70" y2="130" class="actor"/>
+    <text x="10" y="160" class="label">Staff</text>
+  </g>
+
+  <!-- Use cases -->
+  <g filter="url(#sketch)">
+    <ellipse cx="440" cy="200" rx="170" ry="36" class="ellipse"/>
+    <text x="340" y="206" class="label">View dashboard</text>
+
+    <ellipse cx="780" cy="200" rx="200" ry="36" class="ellipse"/>
+    <text x="656" y="206" class="label">Configure notifications & recipients</text>
+
+    <ellipse cx="520" cy="300" rx="200" ry="36" class="ellipse"/>
+    <text x="420" y="306" class="label">Manage snacks (CRUD)</text>
+
+    <ellipse cx="880" cy="300" rx="210" ry="36" class="ellipse"/>
+    <text x="760" y="306" class="label">Import/Export via Excel</text>
+
+    <ellipse cx="520" cy="400" rx="200" ry="36" class="ellipse"/>
+    <text x="430" y="406" class="label">Adjust stock (reasons)</text>
+
+    <ellipse cx="880" cy="400" rx="210" ry="36" class="ellipse"/>
+    <text x="776" y="406" class="label">Generate monthly report</text>
+
+    <ellipse cx="520" cy="500" rx="200" ry="36" class="ellipse"/>
+    <text x="426" y="506" class="label">Log consumption</text>
+
+    <ellipse cx="880" cy="500" rx="210" ry="36" class="ellipse"/>
+    <text x="792" y="506" class="label">Scan barcode & lookup</text>
+
+    <ellipse cx="700" cy="600" rx="220" ry="36" class="ellipse"/>
+    <text x="600" y="606" class="label">View audit log</text>
+  </g>
+
+  <!-- Associations -->
+  <g stroke="#111" stroke-width="2" fill="none" filter="url(#sketch)">
+    <!-- Admin links to all -->
+    <line x1="120" y1="270" x2="440" y2="200"/>
+    <line x1="120" y1="270" x2="780" y2="200"/>
+    <line x1="120" y1="300" x2="520" y2="300"/>
+    <line x1="120" y1="330" x2="880" y2="300"/>
+    <line x1="120" y1="360" x2="520" y2="400"/>
+    <line x1="120" y1="390" x2="880" y2="400"/>
+    <line x1="120" y1="420" x2="520" y2="500"/>
+    <line x1="120" y1="450" x2="880" y2="500"/>
+    <line x1="120" y1="480" x2="700" y2="600"/>
+
+    <!-- Staff links (limited) -->
+    <line x1="1340" y1="270" x2="440" y2="200"/>
+    <line x1="1340" y1="300" x2="520" y2="300"/>
+    <line x1="1340" y1="360" x2="520" y2="400"/>
+    <line x1="1340" y1="420" x2="520" y2="500"/>
+    <line x1="1340" y1="450" x2="880" y2="500"/>
+    <line x1="1340" y1="520" x2="700" y2="600"/>
+  </g>
+</svg>
+
+

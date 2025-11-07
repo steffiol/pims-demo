@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 18px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .stroke{fill:#fff;stroke:#111;stroke-width:2}
+      .muted{fill:#f5f5f5}
+      .hint{font:12px Segoe UI,Inter,Arial,sans-serif;fill:#555}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1024" class="muted"/>
+  <!-- Browser chrome -->
+  <rect x="16" y="16" rx="12" ry="12" width="1408" height="56" class="stroke" fill="#efefef"/>
+  <circle cx="40" cy="44" r="8" fill="#ff5f56"/>
+  <circle cx="64" cy="44" r="8" fill="#ffbd2e"/>
+  <circle cx="88" cy="44" r="8" fill="#27c93f"/>
+  <rect x="120" y="28" rx="8" ry="8" width="1000" height="32" class="stroke" fill="#fff"/>
+  <rect x="1134" y="28" rx="8" ry="8" width="120" height="32" class="stroke" fill="#fff"/>
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="240" height="1024" class="stroke" fill="#fafafa"/>
+  <text x="24" y="40" class="title">Sidebar</text>
+  <rect x="16" y="64" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="90" class="label">Dashboard</text>
+  <rect x="16" y="112" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="138" class="label">Snacks</text>
+  <rect x="16" y="160" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="186" class="label">Import/Export</text>
+  <rect x="16" y="208" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="234" class="label">Reports</text>
+  <rect x="16" y="256" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="282" class="label">Settings</text>
+  <rect x="16" y="304" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="330" class="label">Audit Log</text>
+  <rect x="16" y="352" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="378" class="label">Scanner</text>
+  <rect x="16" y="400" width="208" height="40" class="stroke" fill="#fff"/>
+  <text x="28" y="426" class="label">Access</text>
+
+  <!-- Header -->
+  <rect x="240" y="80" width="1200" height="64" class="stroke" fill="#fff"/>
+  <text x="260" y="120" class="title">Header / Page Title</text>
+
+  <!-- Content canvas -->
+  <rect x="240" y="160" width="1200" height="840" class="stroke" fill="#fff"/>
+  <text x="260" y="190" class="label">Content Area</text>
+  <text x="260" y="212" class="hint">Use cards, tables, forms depending on page</text>
+
+  <!-- Example grid -->
+  <rect x="260" y="240" rx="10" ry="10" width="360" height="120" class="stroke"/>
+  <rect x="640" y="240" rx="10" ry="10" width="360" height="120" class="stroke"/>
+  <rect x="1020" y="240" rx="10" ry="10" width="360" height="120" class="stroke"/>
+  <rect x="260" y="380" rx="10" ry="10" width="1120" height="580" class="stroke"/>
+</svg>
+
+

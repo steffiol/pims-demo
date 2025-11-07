@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 18px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .stroke{fill:#fff;stroke:#111;stroke-width:2}
+      .muted{fill:#f5f5f5}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1024" class="muted"/>
+  <!-- Browser chrome -->
+  <rect x="16" y="16" rx="12" ry="12" width="1408" height="56" class="stroke" fill="#efefef"/>
+  <circle cx="40" cy="44" r="8" fill="#ff5f56"/>
+  <circle cx="64" cy="44" r="8" fill="#ffbd2e"/>
+  <circle cx="88" cy="44" r="8" fill="#27c93f"/>
+  <rect x="120" y="28" rx="8" ry="8" width="1000" height="32" class="stroke" fill="#fff"/>
+  <rect x="1134" y="28" rx="8" ry="8" width="120" height="32" class="stroke" fill="#fff"/>
+  <text x="32" y="108" class="title">Audit Log</text>
+
+  <rect x="32" y="132" rx="8" ry="8" width="140" height="40" class="stroke" fill="#fff0f0"/>
+  <text x="44" y="158" class="label">Clear log</text>
+
+  <rect x="32" y="188" rx="10" ry="10" width="1308" height="740" class="stroke"/>
+  <text x="44" y="218" class="label">Time | Actor | Action | Details</text>
+  <line x1="32" y1="244" x2="1340" y2="244" stroke="#111" stroke-width="2" stroke-dasharray="6 6"/>
+</svg>
+
+

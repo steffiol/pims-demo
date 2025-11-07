@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1024" viewBox="0 0 1440 1024">
+  <defs>
+    <style>
+      .label{font:14px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .title{font:bold 18px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+      .stroke{fill:#fff;stroke:#111;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .muted{fill:#f5f5f5}
+      .note{font:13px Segoe UI,Inter,Arial,sans-serif;fill:#111}
+    </style>
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1024" class="muted"/>
+  <!-- Browser chrome (Windows style) -->
+  <rect x="16" y="16" rx="6" ry="6" width="1408" height="56" class="stroke" fill="#e6e6e6" filter="url(#sketch)"/>
+  <rect x="32" y="28" rx="6" ry="6" width="1100" height="32" class="stroke" fill="#fff" filter="url(#sketch)"/>
+  <g transform="translate(1270,20)" filter="url(#sketch)">
+    <rect x="0" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="44" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="88" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <line x1="12" y1="20" x2="28" y2="20" stroke="#111" stroke-width="2"/>
+    <rect x="56" y="10" width="16" height="16" stroke="#111" fill="none"/>
+    <line x1="100" y1="12" x2="116" y2="28" stroke="#111" stroke-width="2"/>
+    <line x1="116" y1="12" x2="100" y2="28" stroke="#111" stroke-width="2"/>
+  </g>
+
+  <!-- Stats -->
+  <text x="32" y="108" class="title">Dashboard</text>
+  <rect x="32" y="132" rx="10" ry="10" width="420" height="120" class="stroke" filter="url(#sketch)"/>
+  <text x="48" y="172" class="label">Low stock: 0</text>
+  <rect x="476" y="132" rx="10" ry="10" width="420" height="120" class="stroke" filter="url(#sketch)"/>
+  <text x="492" y="172" class="label">Soon to expire: 0</text>
+  <rect x="920" y="132" rx="10" ry="10" width="420" height="120" class="stroke" filter="url(#sketch)"/>
+  <text x="936" y="172" class="label">Recently added: 0</text>
+
+  <!-- Actions -->
+  <rect x="32" y="272" rx="8" ry="8" width="600" height="44" class="stroke" filter="url(#sketch)"/>
+  <text x="44" y="300" class="label">Search input</text>
+  <rect x="652" y="272" rx="8" ry="8" width="180" height="44" class="stroke" fill="#f0f7ff" filter="url(#sketch)"/>
+  <text x="666" y="300" class="label">Preview email</text>
+  <rect x="844" y="272" rx="8" ry="8" width="220" height="44" class="stroke" fill="#e8f7e9" filter="url(#sketch)"/>
+  <text x="858" y="300" class="label">Send batch email</text>
+
+  <!-- Table -->
+  <rect x="32" y="336" rx="10" ry="10" width="1308" height="640" class="stroke" filter="url(#sketch)"/>
+  <text x="44" y="366" class="label">Snacks table</text>
+  <line x1="32" y1="400" x2="1340" y2="400" stroke="#111" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="44" y="426" class="label">Name</text>
+  <text x="344" y="426" class="label">Expiry</text>
+  <text x="564" y="426" class="label">Type</text>
+  <text x="724" y="426" class="label">Purchased</text>
+  <text x="924" y="426" class="label">Current</text>
+  <text x="1104" y="426" class="label">Purchased by</text>
+
+  <!-- Note annotation -->
+  <g transform="translate(1180,320) rotate(3)">
+    <rect x="0" y="0" width="220" height="90" rx="6" ry="6" fill="#fff6c2" stroke="#c9b65a" stroke-width="2"/>
+    <polygon points="200,0 220,0 220,20" fill="#f7d37b"/>
+    <text x="12" y="26" class="note">Note: Weekly summary</text>
+    <text x="12" y="48" class="note">email for admins</text>
+  </g>
+</svg>
+
+
