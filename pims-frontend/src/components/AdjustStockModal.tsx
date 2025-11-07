@@ -38,3 +38,5 @@ export function AdjustStockModal({ open, onCancel, onSubmit }: Props) {
 export default AdjustStockModal
 
 
+
+

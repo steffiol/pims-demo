@@ -9,13 +9,18 @@
     </style>
   </defs>
   <rect x="0" y="0" width="1440" height="1024" class="muted"/>
-  <!-- Browser chrome -->
-  <rect x="16" y="16" rx="12" ry="12" width="1408" height="56" class="stroke" fill="#efefef"/>
-  <circle cx="40" cy="44" r="8" fill="#ff5f56"/>
-  <circle cx="64" cy="44" r="8" fill="#ffbd2e"/>
-  <circle cx="88" cy="44" r="8" fill="#27c93f"/>
-  <rect x="120" y="28" rx="8" ry="8" width="1000" height="32" class="stroke" fill="#fff"/>
-  <rect x="1134" y="28" rx="8" ry="8" width="120" height="32" class="stroke" fill="#fff"/>
+  <!-- Browser chrome (Windows style) -->
+  <rect x="16" y="16" rx="6" ry="6" width="1408" height="56" class="stroke" fill="#e6e6e6"/>
+  <rect x="32" y="28" rx="6" ry="6" width="1100" height="32" class="stroke" fill="#fff"/>
+  <g transform="translate(1270,20)">
+    <rect x="0" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="44" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <rect x="88" y="0" width="40" height="40" class="stroke" fill="#fff"/>
+    <line x1="12" y1="20" x2="28" y2="20" stroke="#111" stroke-width="2"/>
+    <rect x="56" y="10" width="16" height="16" stroke="#111" fill="none"/>
+    <line x1="100" y1="12" x2="116" y2="28" stroke="#111" stroke-width="2"/>
+    <line x1="116" y1="12" x2="100" y2="28" stroke="#111" stroke-width="2"/>
+  </g>
 
   <!-- Sidebar -->
   <rect x="0" y="0" width="240" height="1024" class="stroke" fill="#fafafa"/>
