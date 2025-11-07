@@ -6,6 +6,7 @@ import StockManagement from './pages/StockManagement'
 import Reports from './pages/Reports'
 import Feedback from './pages/Feedback'
 import Announcements from './pages/Announcements'
+import AdminSettings from './pages/AdminSettings'
 
 export default function App() {
   return (
@@ -19,10 +20,8 @@ export default function App() {
             <NavLink to="/reports"><FaChartBar /> Reports</NavLink>
             <NavLink to="/feedback"><FaComments /> Feedback & Polls</NavLink>
             <NavLink to="/announcements"><FaBullhorn /> Announcements</NavLink>
+            <NavLink to="/settings"><FaWrench /> Admin Settings</NavLink>
           </ul>
-          <div style={{ position: 'absolute', bottom: 24, left: 12, right: 12, color: '#8a8a8a', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <FaWrench /> Admin Settings
-          </div>
         </aside>
         <main className="main">
           <Routes>
@@ -31,6 +30,7 @@ export default function App() {
             <Route path="/reports" element={<Reports />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/announcements" element={<Announcements />} />
+            <Route path="/settings" element={<AdminSettings />} />
           </Routes>
         </main>
       </div>

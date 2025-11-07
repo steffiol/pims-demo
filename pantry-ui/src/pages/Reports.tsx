@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import * as XLSX from 'xlsx'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
+import { FaDownload } from 'react-icons/fa'
 import { snackRows } from '../data/snacks'
 
 type Row = {
@@ -46,37 +45,7 @@ export default function Reports() {
     XLSX.writeFile(wb, `snacks_report_${ym}.xlsx`)
   }
 
-  const exportPdf = () => {
-    const doc = new jsPDF({ orientation: 'landscape' })
-    doc.setFontSize(16)
-    doc.text(`SnackWatch Monthly Report — ${ym}`, 14, 16)
-    autoTable(doc, {
-      startY: 22,
-      head: [[
-        'Snack name',
-        'Date of purchase',
-        'Expiry date',
-        'Purchased quantity',
-        'Current remaining',
-        'Stock type',
-        'Purchased by',
-        'Report date',
-      ]],
-      body: rows.map(r => [
-        r.snackName,
-        dayjs(r.dateOfPurchase).format('YYYY-MM-DD'),
-        dayjs(r.expiryDate).format('YYYY-MM-DD'),
-        String(r.purchasedQty),
-        String(r.currentQty),
-        r.stockType,
-        r.purchasedBy,
-        r.reportDate,
-      ]),
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [242, 242, 242], textColor: 17 },
-    })
-    doc.save(`snacks_report_${ym}.pdf`)
-  }
+  // PDF export removed per requirement
 
   return (
     <>
@@ -95,8 +64,7 @@ export default function Reports() {
           })}
         </select>
         <div style={{ flex: 1 }} />
-        <button onClick={exportExcel} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Export Excel</button>
-        <button onClick={exportPdf} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Export PDF</button>
+        <button onClick={exportExcel} style={{ display:'inline-flex', alignItems:'center', gap:8, border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}><FaDownload /> Export Excel</button>
       </div>
 
       <div className="card" style={{ paddingTop: 0 }}>

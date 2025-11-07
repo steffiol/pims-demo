@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 type Comment = { by: string; text: string }
-type Post = { id: string; type: 'post'; title: string; body: string; likes: number; hearts: number; comments: Comment[] }
+type Post = { id: string; type: 'post'; title: string; body: string; likes: number; hearts: number; downs: number; neutrals: number; comments: Comment[] }
 type PollOption = { label: string; votes: number }
 type Poll = { id: string; type: 'poll'; question: string; options: PollOption[]; comments: Comment[] }
 type Item = Post | Poll
@@ -15,6 +15,8 @@ export default function Feedback() {
       body: 'Share your ideas! We will order the top suggestions for June.',
       likes: 12,
       hearts: 5,
+      downs: 1,
+      neutrals: 2,
       comments: [
         { by: 'Ashley', text: 'Kinder Bueno pls!' },
         { by: 'Ravi', text: 'Spicy seaweed chips' },
@@ -41,7 +43,7 @@ export default function Feedback() {
 
   const addPost = () => {
     if (!newPost.title || !newPost.body) return
-    setItems(prev => [{ id: crypto.randomUUID(), type: 'post', title: newPost.title, body: newPost.body, likes: 0, hearts: 0, comments: [] }, ...prev])
+    setItems(prev => [{ id: crypto.randomUUID(), type: 'post', title: newPost.title, body: newPost.body, likes: 0, hearts: 0, downs: 0, neutrals: 0, comments: [] }, ...prev])
     setNewPost({ title: '', body: '' })
   }
 
@@ -57,25 +59,28 @@ export default function Feedback() {
       <h1 className="title" style={{ marginBottom: 12 }}>Feedback & Polls</h1>
 
       <div className="card">
-        <div style={{ display:'flex', gap:16, marginBottom: 12 }}>
-          <button onClick={() => setMode('post')} className={mode==='post' ? 'tab active' : 'tab'} style={{ border:'1px solid #e1e1e1' }}>Post</button>
-          <button onClick={() => setMode('poll')} className={mode==='poll' ? 'tab active' : 'tab'} style={{ border:'1px solid #e1e1e1' }}>Poll</button>
+        <div className="seg" style={{ marginBottom: 12 }}>
+          <button onClick={() => setMode('post')} className={mode==='post' ? 'active' : ''}>Post</button>
+          <button onClick={() => setMode('poll')} className={mode==='poll' ? 'active' : ''}>Poll</button>
         </div>
         {mode === 'post' ? (
           <div>
-            <input placeholder="Title" value={newPost.title} onChange={e => setNewPost({ ...newPost, title: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8 }} />
-            <textarea placeholder="Write an announcement or ask for feedback" value={newPost.body} onChange={e => setNewPost({ ...newPost, body: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', height: 90, marginBottom: 8 }} />
+            <input placeholder="Title" value={newPost.title} onChange={e => setNewPost({ ...newPost, title: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8, fontFamily:'inherit' }} />
+            <textarea placeholder="Write your feedback" value={newPost.body} onChange={e => setNewPost({ ...newPost, body: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', height: 90, marginBottom: 8, fontFamily:'inherit' }} />
             <button onClick={addPost} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Post</button>
           </div>
         ) : (
           <div>
             <input placeholder="Question" value={newPoll.question} onChange={e => setNewPoll({ ...newPoll, question: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8 }} />
             {newPoll.options.map((opt, i) => (
-              <input key={i} placeholder={`Option ${i+1}`} value={opt} onChange={e => setNewPoll({ ...newPoll, options: newPoll.options.map((o, j) => j===i ? e.target.value : o) })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8 }} />
+              <div key={i} style={{ display:'flex', gap:8, alignItems:'center', marginBottom: 8 }}>
+                <input placeholder={`Option ${i+1}`} value={opt} onChange={e => setNewPoll({ ...newPoll, options: newPoll.options.map((o, j) => j===i ? e.target.value : o) })} style={{ flex:1, border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px' }} />
+                <button onClick={() => setNewPoll(p => ({ ...p, options: p.options.filter((_, j) => j!==i) }))} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'8px 10px' }}>×</button>
+              </div>
             ))}
             <div style={{ display:'flex', gap:8 }}>
               <button onClick={() => setNewPoll(p => ({ ...p, options: [...p.options, ''] }))} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Add option</button>
-              <button onClick={addPoll} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Create poll</button>
+              <button onClick={addPoll} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', borderRadius:8, padding:'10px 14px', color:'#5b5b5b' }}>Create poll</button>
             </div>
           </div>
         )}
@@ -90,6 +95,8 @@ export default function Feedback() {
               <div className="reactions">
                 <button onClick={() => setItems(prev => prev.map(x => x === item ? { ...(x as Post), likes: (x as Post).likes + 1 } as Item : x))}>👍 {(item as Post).likes}</button>
                 <button onClick={() => setItems(prev => prev.map(x => x === item ? { ...(x as Post), hearts: (x as Post).hearts + 1 } as Item : x))}>❤️ {(item as Post).hearts}</button>
+                <button onClick={() => setItems(prev => prev.map(x => x === item ? { ...(x as Post), downs: (x as Post).downs + 1 } as Item : x))}>👎 {(item as Post).downs}</button>
+                <button onClick={() => setItems(prev => prev.map(x => x === item ? { ...(x as Post), neutrals: (x as Post).neutrals + 1 } as Item : x))}>😐 {(item as Post).neutrals}</button>
               </div>
               <Comments item={item} setItems={setItems} />
             </>
@@ -108,9 +115,7 @@ export default function Feedback() {
                 )
               })}
               <div className="reactions">
-                {(item as Poll).options.map((opt, i) => (
-                  <button key={i} onClick={() => setItems(prev => prev.map(x => x === item ? { ...(x as Poll), options: (x as Poll).options.map((o, j) => j===i ? { ...o, votes: o.votes + 1 } : o) } as Item : x))} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'8px 12px' }}>Vote {opt.label}</button>
-                ))}
+              <PollVotes item={item as Poll} setItems={setItems} />
               </div>
               <Comments item={item} setItems={setItems} />
             </>
@@ -118,6 +123,26 @@ export default function Feedback() {
         </div>
       ))}
     </>
+  )
+}
+
+function PollVotes({ item, setItems }: { item: Poll; setItems: React.Dispatch<React.SetStateAction<Item[]>> }) {
+  const [selected, setSelected] = useState<number | null>(null)
+  return (
+    <div className="vote-group">
+      {item.options.map((opt, i) => (
+        <button
+          key={i}
+          className={`vote-btn ${selected === i ? 'selected' : ''}`}
+          onClick={() => {
+            setSelected(i)
+            setItems(prev => prev.map(x => x === item ? { ...x, options: item.options.map((o, j) => j===i ? { ...o, votes: o.votes + 1 } : o) } as Item : x))
+          }}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
   )
 }
 

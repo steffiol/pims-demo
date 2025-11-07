@@ -1,11 +1,12 @@
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { snackRows } from '../data/snacks'
+import { getExpiryDays } from '../utils/config'
 
 type Ann = { id: string; at: string; body: string; posted?: boolean }
 
 export default function Announcements() {
-  const THRESHOLD = 30
+  const THRESHOLD = getExpiryDays()
   const [feed, setFeed] = useState<Ann[]>([{
     id: crypto.randomUUID(),
     at: dayjs('2025-10-01 09:00').toISOString(),

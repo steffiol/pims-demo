@@ -9,7 +9,7 @@ export default function Overview() {
         <div className="kpi"><div className="num">14</div><div className="label">Low Stock</div></div>
         <div className="kpi"><div className="num">8</div><div className="label">Expiring Soon</div></div>
       </section>
-      <section className="card">
+      <section className="card health">
         <h3>Stock Health Overview</h3>
         <div className="row">
           <div>Low Stock</div>
@@ -17,7 +17,7 @@ export default function Overview() {
         </div>
         <div className="row">
           <div>Expiring Soon</div>
-          <div className="bar"><div className="fill" style={{ width: '45%', background:'#d5d5d5' }} /></div>
+          <div className="bar"><div className="fill" style={{ width: '45%' }} /></div>
         </div>
       </section>
       <section>

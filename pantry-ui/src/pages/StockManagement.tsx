@@ -4,14 +4,14 @@ import * as XLSX from 'xlsx'
 import dayjs from 'dayjs'
 import { snackRows } from '../data/snacks'
 
-type Row = { name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string }
+type Row = { name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial?: boolean }
 
 const initialData: Row[] = snackRows
 
 export default function StockManagement() {
   const fileRef = useRef<HTMLInputElement>(null)
   const [rows, setRows] = useState<Row[]>(initialData)
-  const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent'>('all')
+  const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent' | 'trial'>('all')
   return (
     <>
       <div className="kpis" style={{ marginTop: 8 }}>
@@ -23,24 +23,28 @@ export default function StockManagement() {
       <section className="card" style={{ paddingTop: 12 }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div style={{ display:'flex', gap:24, color:'#6b6b6b' }}>
-            {(['all','low','expiring','recent'] as const).map(key => (
+            {(['all','low','expiring','recent','trial'] as const).map(key => (
               <span
                 key={key}
                 onClick={() => setTab(key)}
                 style={{ cursor:'pointer', fontWeight: tab===key ? 700 : 400, textDecoration: tab===key ? 'underline' : 'none' }}
               >
-                {key === 'all' ? 'All' : key === 'low' ? 'Low stock' : key === 'expiring' ? 'Soon to expire' : 'Recently added'}
+                {key === 'all' ? 'All' : key === 'low' ? 'Low stock' : key === 'expiring' ? 'Soon to expire' : key === 'recent' ? 'Recently added' : 'New Trial Snack'}
               </span>
             ))}
           </div>
           <div style={{ display:'flex', gap:12 }}>
             <div className="search"><span>Search snacks</span> <FaSearch className="icon" /></div>
-            <select className="sort" defaultValue="default">
-              <option value="default">Sort by</option>
+            <div className="field">
+              <label>Sort by</label>
+              <select className="select" defaultValue="default">
+                <option value="default">None</option>
               <option value="expiry">Expiry date</option>
               <option value="purchase">Date of purchase</option>
               <option value="name">Snack name</option>
-            </select>
+                <option value="quantity">Quantity</option>
+              </select>
+            </div>
             <input ref={fileRef} type="file" accept=".xlsx,.xls" style={{ display:'none' }} onChange={async (e) => {
               const f = e.target.files?.[0]
               if (!f) return
@@ -85,6 +89,7 @@ export default function StockManagement() {
                   }
                   if (tab === 'expiring') return dayjs(r.expiry).diff(now, 'day') <= 30
                   if (tab === 'recent') return now.diff(dayjs(r.purchaseDate), 'day') <= 30
+                  if (tab === 'trial') return !!r.trial
                   return true
                 })
               }, [rows, tab]).map((r, i) => (
