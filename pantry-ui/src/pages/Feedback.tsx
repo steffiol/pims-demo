@@ -143,7 +143,7 @@ function Comments({ item, setItems }: { item: Item; setItems: React.Dispatch<Rea
       ))}
       <div style={{ display:'flex', gap:8, marginTop: 8 }}>
         <input value={text} onChange={e => setText(e.target.value)} placeholder="Add a comment" style={{ flex:1, border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px' }} />
-        <button onClick={submit} style={{ background:'#1a73e8', color:'#fff', border:'0', borderRadius:8, padding:'10px 14px' }}>Send</button>
+        <button onClick={submit} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Send</button>
       </div>
     </div>
   )
