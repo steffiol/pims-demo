@@ -15,9 +15,19 @@ export default function StockManagement() {
   return (
     <>
       <div className="kpis" style={{ marginTop: 8 }}>
-        <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Low stock</div><div className="num">0</div></div>
-        <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Soon to expire</div><div className="num">0</div></div>
-        <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Recently added</div><div className="num">0</div></div>
+        {(() => {
+          const now = dayjs()
+          const low = rows.filter(r => r.current <= Math.max(10, Math.ceil(r.purchased * 0.2))).length
+          const exp = rows.filter(r => dayjs(r.expiry).diff(now, 'day') <= 30).length
+          const recent = rows.filter(r => now.diff(dayjs(r.purchaseDate), 'day') <= 30).length
+          return (
+            <>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Low stock</div><div className="num">{low}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Soon to expire</div><div className="num">{exp}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Recently added</div><div className="num">{recent}</div></div>
+            </>
+          )
+        })()}
       </div>
 
       <section className="card" style={{ paddingTop: 12 }}>

@@ -11,6 +11,19 @@ import AdminSettings from './pages/AdminSettings'
 export default function App() {
   return (
     <BrowserRouter>
+      <div className="browser-chrome">
+        <div className="chrome-dots">
+          <div className="chrome-dot"></div>
+          <div className="chrome-dot"></div>
+          <div className="chrome-dot"></div>
+        </div>
+        <div className="chrome-nav">
+          <div className="chrome-btn" />
+          <div className="chrome-btn" />
+          <div className="chrome-btn" />
+        </div>
+        <div className="chrome-url">https://pantry-ui.local</div>
+      </div>
       <div className="app">
         <aside className="sidebar">
           <div className="brand">&nbsp;</div>

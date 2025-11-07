@@ -1,4 +1,7 @@
 import { FaSearch } from 'react-icons/fa'
+import dayjs from 'dayjs'
+import { snackRows } from '../data/snacks'
+import { getExpiryDays } from '../utils/config'
 
 export default function Overview() {
   return (
@@ -11,14 +14,30 @@ export default function Overview() {
       </section>
       <section className="card health">
         <h3>Stock Health Overview</h3>
-        <div className="row">
-          <div>Low Stock</div>
-          <div className="bar"><div className="fill" style={{ width: '85%' }} /></div>
-        </div>
-        <div className="row">
-          <div>Expiring Soon</div>
-          <div className="bar"><div className="fill" style={{ width: '45%' }} /></div>
-        </div>
+        {(() => {
+          const total = snackRows.length || 1
+          const now = dayjs()
+          const low = snackRows.filter(s => {
+            const threshold = Math.max(10, Math.ceil(s.purchased * 0.2))
+            return s.current <= threshold
+          }).length
+          const expDays = getExpiryDays()
+          const expiring = snackRows.filter(s => dayjs(s.expiry).diff(now, 'day') <= expDays).length
+          const wLow = Math.round((low / total) * 100)
+          const wExp = Math.round((expiring / total) * 100)
+          return (
+            <>
+              <div className="row">
+                <div>{`Low Stock (${low})`}</div>
+                <div className="bar"><div className="fill" style={{ width: `${wLow}%` }} /></div>
+              </div>
+              <div className="row">
+                <div>{`Expiring Soon (${expiring})`}</div>
+                <div className="bar"><div className="fill" style={{ width: `${wExp}%` }} /></div>
+              </div>
+            </>
+          )
+        })()}
       </section>
       <section>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
