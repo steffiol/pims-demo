@@ -59,9 +59,8 @@ select.sort, select.filter { border: 1px solid var(--line); background: #fff; co
 }
 .chrome-dots { display: flex; gap: 8px; margin-right: 12px; }
 .chrome-dot { width: 10px; height: 10px; border-radius: 50%; background: #bdbdbd; }
-.chrome-nav { display: flex; gap: 8px; margin-right: 10px; }
-.chrome-btn { width: 20px; height: 20px; border: 1px solid #cfcfcf; border-radius: 4px; background: #f8f8f8; }
 .chrome-url { flex: 1; height: 24px; border: 1px solid #cfcfcf; border-radius: 6px; background: #ffffff; display:flex; align-items:center; padding:0 10px; color:#9b9b9b; font-size: 12px; }
+.chrome-close { width: 22px; height: 22px; border: 1px solid #cfcfcf; border-radius: 4px; background: #f8f8f8; display:flex; align-items:center; justify-content:center; color:#8a8a8a; margin-left: 10px; }
 table { width: 100%; border-collapse: collapse; font-size: 16px; }
 thead th { text-align: left; background: #f2f2f2; color: #6b6b6b; border-bottom: 1px solid var(--line); padding: 14px 16px; }
 tbody td { padding: 16px; border-bottom: 1px solid var(--line); color: #666; }

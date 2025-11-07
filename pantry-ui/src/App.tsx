@@ -17,12 +17,7 @@ export default function App() {
           <div className="chrome-dot"></div>
           <div className="chrome-dot"></div>
         </div>
-        <div className="chrome-nav">
-          <div className="chrome-btn" />
-          <div className="chrome-btn" />
-          <div className="chrome-btn" />
-        </div>
-        <div className="chrome-url">https://pantry-ui.local</div>
+        <div className="chrome-url"></div>
       </div>
       <div className="app">
         <aside className="sidebar">
