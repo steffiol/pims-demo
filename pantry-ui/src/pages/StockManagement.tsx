@@ -12,6 +12,33 @@ export default function StockManagement() {
   const fileRef = useRef<HTMLInputElement>(null)
   const [rows, setRows] = useState<Row[]>(initialData)
   const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent' | 'trial'>('all')
+  const [showAdd, setShowAdd] = useState(false)
+  const [form, setForm] = useState<{ name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial: boolean }>({
+    name: '',
+    expiry: '',
+    purchaseDate: '',
+    type: 'Packet',
+    purchased: 0,
+    current: 0,
+    by: '',
+    trial: true,
+  })
+
+  const handleAdd = () => {
+    const newRow: Row = {
+      name: form.name || 'New Snack',
+      expiry: form.expiry || dayjs().add(30, 'day').format('YYYY-MM-DD'),
+      purchaseDate: form.purchaseDate || dayjs().format('YYYY-MM-DD'),
+      type: form.type || 'Packet',
+      purchased: Number.isFinite(form.purchased) ? Number(form.purchased) : 0,
+      current: Number.isFinite(form.current) ? Number(form.current) : 0,
+      by: form.by || 'Admin',
+      trial: !!form.trial,
+    }
+    setRows(prev => [newRow, ...prev])
+    setShowAdd(false)
+    setTab(form.trial ? 'trial' : 'all')
+  }
   return (
     <>
       <div className="kpis kpis-4" style={{ marginTop: 8 }}>
@@ -57,6 +84,7 @@ export default function StockManagement() {
                 <option value="quantity">Quantity</option>
               </select>
             </div>
+            <button onClick={() => setShowAdd(true)} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Add New Snack</button>
             <input ref={fileRef} type="file" accept=".xlsx,.xls" style={{ display:'none' }} onChange={async (e) => {
               const f = e.target.files?.[0]
               if (!f) return
@@ -126,6 +154,57 @@ export default function StockManagement() {
             </tbody>
           </table>
         </div>
+        {showAdd && (
+          <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.2)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:50 }}>
+            <div className="card" style={{ width: 560, maxWidth: '92%' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 8 }}>
+                <h3 style={{ fontSize: 22, margin: 0, fontWeight: 600, color: '#6e6e6e' }}>Add New Snack</h3>
+                <button onClick={() => setShowAdd(false)} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:6, padding:'6px 10px' }}>×</button>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+                <div className="field">
+                  <label>Snack name</label>
+                  <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Stock type</label>
+                  <input value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Expiry date</label>
+                  <input type="date" value={form.expiry} onChange={e => setForm({ ...form, expiry: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Date of purchase</label>
+                  <input type="date" value={form.purchaseDate} onChange={e => setForm({ ...form, purchaseDate: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Purchase quantity</label>
+                  <input type="number" min={0} value={form.purchased} onChange={e => setForm({ ...form, purchased: Number(e.target.value) })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Current remaining</label>
+                  <input type="number" min={0} value={form.current} onChange={e => setForm({ ...form, current: Number(e.target.value) })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field">
+                  <label>Purchased by</label>
+                  <input value={form.by} onChange={e => setForm({ ...form, by: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                </div>
+                <div className="field" style={{ alignSelf:'end' }}>
+                  <label style={{ visibility:'hidden' }}>flag</label>
+                  <label style={{ display:'flex', alignItems:'center', gap:8, color:'#6b6b6b' }}>
+                    <input type="checkbox" checked={form.trial} onChange={e => setForm({ ...form, trial: e.target.checked })} />
+                    Mark as New Item
+                  </label>
+                </div>
+              </div>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:10, marginTop:16 }}>
+                <button onClick={() => setShowAdd(false)} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'10px 14px' }}>Cancel</button>
+                <button onClick={handleAdd} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', color:'#5a5a5a', borderRadius:8, padding:'10px 14px' }}>Add Snack</button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </>
   )
