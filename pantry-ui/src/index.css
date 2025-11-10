@@ -65,7 +65,11 @@ table { width: 100%; border-collapse: collapse; font-size: 16px; }
 thead th { text-align: left; background: #f2f2f2; color: #6b6b6b; border-bottom: 1px solid var(--line); padding: 14px 16px; }
 tbody td { padding: 16px; border-bottom: 1px solid var(--line); color: #666; }
 .table-wrap { margin: 0 -24px; }
-.home-grid { display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
-.home-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 24px; text-decoration: none; color: #555; text-align: center; min-height: 140px; }
+.home-grid { display: grid; grid-template-columns: repeat(2, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.home-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: var(--radius); padding: 20px; text-decoration: none; color: #555; text-align: center; min-height: 120px; }
 .home-card:hover { background: #f5f5f5; }
-.home-card .title { font-weight: 600; }
+.home-card-title { font-weight: 600; font-size: 20px; color: #6e6e6e; }
+
+@media (max-width: 900px) {
+  .home-grid { grid-template-columns: 1fr; }
+}
