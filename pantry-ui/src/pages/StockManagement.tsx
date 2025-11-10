@@ -166,7 +166,7 @@ export default function StockManagement() {
           </table>
         </div>
         {showAdd && (
-          <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.2)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:50 }}>
+          <div style={{ position:'fixed', inset:'90px 0 0 0', background:'rgba(0,0,0,0.2)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:20 }}>
             <div className="card" style={{ width: 560, maxWidth: '92%' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 8 }}>
                 <h3 style={{ fontSize: 22, margin: 0, fontWeight: 600, color: '#6e6e6e' }}>Edit Snack</h3>

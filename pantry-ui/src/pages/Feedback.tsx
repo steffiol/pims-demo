@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { FaTrash } from 'react-icons/fa'
 
 type Comment = { by: string; text: string }
 type Post = { id: string; type: 'post'; title: string; body: string; likes: number; hearts: number; downs: number; neutrals: number; comments: Comment[] }
@@ -40,6 +41,8 @@ export default function Feedback() {
   const [newPost, setNewPost] = useState({ title: '', body: '' })
   const [newPoll, setNewPoll] = useState<{ question: string; options: string[] }>({ question: '', options: ['',''] })
   const [mode, setMode] = useState<'post' | 'poll'>('post')
+  const isAdmin = (localStorage.getItem('role') || 'admin') === 'admin'
+  const deleteItem = (id: string) => setItems(prev => prev.filter(i => i.id !== id))
 
   const addPost = () => {
     if (!newPost.title || !newPost.body) return
@@ -58,36 +61,50 @@ export default function Feedback() {
     <>
       <h1 className="title" style={{ marginBottom: 12 }}>Feedback & Polls</h1>
 
-      <div className="card">
-        <div className="seg" style={{ marginBottom: 12 }}>
-          <button onClick={() => setMode('post')} className={mode==='post' ? 'active' : ''}>Post</button>
-          <button onClick={() => setMode('poll')} className={mode==='poll' ? 'active' : ''}>Poll</button>
-        </div>
-        {mode === 'post' ? (
-          <div>
-            <input placeholder="Title" value={newPost.title} onChange={e => setNewPost({ ...newPost, title: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8, fontFamily:'inherit' }} />
-            <textarea placeholder="Write your feedback" value={newPost.body} onChange={e => setNewPost({ ...newPost, body: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', height: 90, marginBottom: 8, fontFamily:'inherit' }} />
-            <button onClick={addPost} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Post</button>
+      {isAdmin && (
+        <div className="card">
+          <div className="seg" style={{ marginBottom: 12 }}>
+            <button onClick={() => setMode('post')} className={mode==='post' ? 'active' : ''}>Post</button>
+            <button onClick={() => setMode('poll')} className={mode==='poll' ? 'active' : ''}>Poll</button>
           </div>
-        ) : (
-          <div>
-            <input placeholder="Question" value={newPoll.question} onChange={e => setNewPoll({ ...newPoll, question: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8 }} />
-            {newPoll.options.map((opt, i) => (
-              <div key={i} style={{ display:'flex', gap:8, alignItems:'center', marginBottom: 8 }}>
-                <input placeholder={`Option ${i+1}`} value={opt} onChange={e => setNewPoll({ ...newPoll, options: newPoll.options.map((o, j) => j===i ? e.target.value : o) })} style={{ flex:1, border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px' }} />
-                <button onClick={() => setNewPoll(p => ({ ...p, options: p.options.filter((_, j) => j!==i) }))} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'8px 10px' }}>×</button>
-              </div>
-            ))}
-            <div style={{ display:'flex', gap:8 }}>
-              <button onClick={() => setNewPoll(p => ({ ...p, options: [...p.options, ''] }))} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Add option</button>
-              <button onClick={addPoll} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', borderRadius:8, padding:'10px 14px', color:'#5b5b5b' }}>Create poll</button>
+          {mode === 'post' ? (
+            <div>
+              <input placeholder="Title" value={newPost.title} onChange={e => setNewPost({ ...newPost, title: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8, fontFamily:'inherit' }} />
+              <textarea placeholder="Write your feedback" value={newPost.body} onChange={e => setNewPost({ ...newPost, body: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', height: 90, marginBottom: 8, fontFamily:'inherit' }} />
+              <button onClick={addPost} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Post</button>
             </div>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div>
+              <input placeholder="Question" value={newPoll.question} onChange={e => setNewPoll({ ...newPoll, question: e.target.value })} style={{ width:'100%', border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px', marginBottom: 8 }} />
+              {newPoll.options.map((opt, i) => (
+                <div key={i} style={{ display:'flex', gap:8, alignItems:'center', marginBottom: 8 }}>
+                  <input placeholder={`Option ${i+1}`} value={opt} onChange={e => setNewPoll({ ...newPoll, options: newPoll.options.map((o, j) => j===i ? e.target.value : o) })} style={{ flex:1, border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px' }} />
+                  <button onClick={() => setNewPoll(p => ({ ...p, options: p.options.filter((_, j) => j!==i) }))} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'8px 10px' }}>×</button>
+                </div>
+              ))}
+              <div style={{ display:'flex', gap:8 }}>
+                <button onClick={() => setNewPoll(p => ({ ...p, options: [...p.options, ''] }))} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Add option</button>
+                <button onClick={addPoll} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', borderRadius:8, padding:'10px 14px', color:'#5b5b5b' }}>Create poll</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {items.map(item => (
         <div key={item.id} className="card">
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <div />
+            {isAdmin && (
+              <button
+                onClick={() => deleteItem(item.id)}
+                title="Delete"
+                style={{ border:'none', background:'transparent', color:'#8a8a8a', padding:'4px 6px' }}
+              >
+                <FaTrash />
+              </button>
+            )}
+          </div>
           {item.type === 'post' ? (
             <>
               <h3>{item.title}</h3>

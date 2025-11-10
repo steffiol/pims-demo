@@ -1,17 +1,17 @@
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { snackRows } from '../data/snacks'
-import { getExpiryDays } from '../utils/config'
+import { getAnnouncementDays } from '../utils/config'
 
 type Ann = { id: string; at: string; body: string; posted?: boolean }
 
 export default function Announcements() {
-  const THRESHOLD = getExpiryDays()
+  const THRESHOLD = getAnnouncementDays()
   const [feed, setFeed] = useState<Ann[]>([{
     id: crypto.randomUUID(),
     at: dayjs('2025-10-01 09:00').toISOString(),
     posted: true,
-    body: `Heads up! These snacks were expiring within 14 days:\n• Milo 3-in-1 Activgo — expiry 2025-10-10 (current: 12)\n• Lay's Nori Seaweed — expiry 2025-10-12 (current: 6)\n\nPlease help consume them soon. Thanks!`,
+    body: `These snacks are expiring within 14 days:\n• Milo 3-in-1 Activgo — expiry 2025-10-10 (current: 12)\n• Lay's Nori Seaweed — expiry 2025-10-12 (current: 6)\n\nPlease help consume them soon. Thanks!`,
   }])
 
   const expiring = useMemo(() => {
@@ -37,10 +37,8 @@ export default function Announcements() {
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
             <div style={{ color:'#6b6b6b' }}>{dayjs(a.at).format('YYYY-MM-DD HH:mm')}</div>
             <div>
-              {!a.posted ? (
+              {!a.posted && (
                 <button onClick={() => post(a.id)} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Post</button>
-              ) : (
-                <span style={{ color:'#6b6b6b' }}>Posted</span>
               )}
             </div>
           </div>
@@ -53,7 +51,7 @@ export default function Announcements() {
 
 function compose(rows: typeof snackRows, days: number) {
   if (rows.length === 0) return ''
-  const lines = [`Heads up! These snacks are expiring within ${days} days:`]
+  const lines = [`These snacks are expiring within ${days} days:`]
   for (const r of rows) {
     lines.push(`• ${r.name} — expiry ${dayjs(r.expiry).format('YYYY-MM-DD')} (current: ${r.current})`)
   }
