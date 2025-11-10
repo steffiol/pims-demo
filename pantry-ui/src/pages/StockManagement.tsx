@@ -1,4 +1,4 @@
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch, FaPlus } from 'react-icons/fa'
 import { useMemo, useRef, useState } from 'react'
 import * as XLSX from 'xlsx'
 import dayjs from 'dayjs'
@@ -13,6 +13,8 @@ export default function StockManagement() {
   const [rows, setRows] = useState<Row[]>(initialData)
   const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent' | 'trial'>('all')
   const [showAdd, setShowAdd] = useState(false)
+  const stockTypes = ['Packet', 'Box', 'Bottle', 'Can']
+  const purchasers = ['Alya Rahman', 'Lee Wei Ming', 'Nur Izzati', 'Arun Kumar', 'Siti Aisyah', 'Chong Kai', 'Farah Nabila']
   const [form, setForm] = useState<{ name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial: boolean }>({
     name: '',
     expiry: '',
@@ -32,7 +34,7 @@ export default function StockManagement() {
       type: form.type || 'Packet',
       purchased: Number.isFinite(form.purchased) ? Number(form.purchased) : 0,
       current: Number.isFinite(form.current) ? Number(form.current) : 0,
-      by: form.by || 'Admin',
+      by: form.by || purchasers[0],
       trial: !!form.trial,
     }
     setRows(prev => [newRow, ...prev])
@@ -84,7 +86,9 @@ export default function StockManagement() {
                 <option value="quantity">Quantity</option>
               </select>
             </div>
-            <button onClick={() => setShowAdd(true)} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Add New Snack</button>
+            <button onClick={() => setShowAdd(true)} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', borderRadius:8, padding:'10px 14px', color:'#5a5a5a', display:'inline-flex', alignItems:'center', gap:8 }}>
+              <FaPlus style={{ opacity:.8 }} /> Add New Snack
+            </button>
             <input ref={fileRef} type="file" accept=".xlsx,.xls" style={{ display:'none' }} onChange={async (e) => {
               const f = e.target.files?.[0]
               if (!f) return
@@ -168,7 +172,9 @@ export default function StockManagement() {
                 </div>
                 <div className="field">
                   <label>Stock type</label>
-                  <input value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="select">
+                    {stockTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
                 </div>
                 <div className="field">
                   <label>Expiry date</label>
@@ -188,7 +194,10 @@ export default function StockManagement() {
                 </div>
                 <div className="field">
                   <label>Purchased by</label>
-                  <input value={form.by} onChange={e => setForm({ ...form, by: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                  <select value={form.by} onChange={e => setForm({ ...form, by: e.target.value })} className="select">
+                    <option value="">Select purchaser</option>
+                    {purchasers.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="field" style={{ alignSelf:'end' }}>
                   <label style={{ visibility:'hidden' }}>flag</label>
