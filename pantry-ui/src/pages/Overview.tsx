@@ -1,10 +1,26 @@
 import { FaSearch } from 'react-icons/fa'
+import { useMemo, useState } from 'react'
 
 export default function Overview() {
+  const baseRows = [
+    { name: 'Milo 3-in-1 Activgo', quantity: 40, type: 'Pack', expiry: '2026-03-22' },
+    { name: "Lay's Nori Seaweed", quantity: 16, type: 'Box', expiry: '2026-03-22' },
+    { name: 'Oriental Super Ring Family Packets', quantity: 52, type: 'Pack', expiry: '2027-06-14' },
+  ]
+  const [sortBy, setSortBy] = useState<'expiry' | 'quantity' | ''>('') 
+  const rows = useMemo(() => {
+    const copy = baseRows.slice()
+    if (sortBy === 'expiry') {
+      copy.sort((a, b) => new Date(a.expiry).getTime() - new Date(b.expiry).getTime())
+    } else if (sortBy === 'quantity') {
+      copy.sort((a, b) => a.quantity - b.quantity)
+    }
+    return copy
+  }, [sortBy])
   return (
     <>
       <section className="kpis">
-        <div className="kpi"><div className="num">95</div><div className="label">Snacks available</div></div>
+        <div className="kpi"><div className="num">95</div><div className="label">Snacks Available</div></div>
         <div className="kpi"><div className="num">14</div><div className="label">Low Stock</div></div>
         <div className="kpi"><div className="num">8</div><div className="label">Expiring Soon</div></div>
       </section>
@@ -32,9 +48,17 @@ export default function Overview() {
       </section>
       <section>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <h3 className="" style={{ margin: 0, fontSize: 28, color: '#6e6e6e', fontWeight: 600 }}>Snacks Inventory</h3>
+          <h3 className="" style={{ margin: 0, fontSize: 28, color: '#6e6e6e', fontWeight: 600 }}>Current Snacks Inventory</h3>
           <div className="toolbar">
             <div className="search"><span>Search snacks</span> <FaSearch className="icon" /></div>
+            <div className="field">
+              <label>Sort by</label>
+              <select className="select" value={sortBy} onChange={e => setSortBy(e.target.value as any)}>
+                <option value="">None</option>
+                <option value="expiry">Expiry date</option>
+                <option value="quantity">Stock quantity</option>
+              </select>
+            </div>
           </div>
         </div>
         <div className="card" style={{ paddingTop: 0 }}>
@@ -49,24 +73,14 @@ export default function Overview() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Milo 3-in-1 Activgo</td>
-                <td>40</td>
-                <td>Pack</td>
-                <td>22/03/2026</td>
-              </tr>
-              <tr>
-                <td>Lay's Nori Seaweed</td>
-                <td>16</td>
-                <td>Box</td>
-                <td>22/03/2026</td>
-              </tr>
-              <tr>
-                <td>Oriental Super Ring Family Packets</td>
-                <td>52</td>
-                <td>Pack</td>
-                <td>14/06/2027</td>
-              </tr>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  <td>{r.name}</td>
+                  <td>{r.quantity}</td>
+                  <td>{r.type}</td>
+                  <td>{new Date(r.expiry).toLocaleDateString('en-GB')}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           </div>

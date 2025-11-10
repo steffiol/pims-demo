@@ -14,17 +14,19 @@ export default function StockManagement() {
   const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent' | 'trial'>('all')
   return (
     <>
-      <div className="kpis" style={{ marginTop: 8 }}>
+      <div className="kpis kpis-4" style={{ marginTop: 8 }}>
         {(() => {
           // Display fixed counts to match design
+          const total = 95
           const low = 14
           const exp = 8
           const recent = 2
           return (
             <>
-              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Low stock</div><div className="num">{low}</div></div>
-              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Soon to expire</div><div className="num">{exp}</div></div>
-              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Recently added</div><div className="num">{recent}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Total Snacks</div><div className="num">{total}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Low Stock</div><div className="num">{low}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>Soon to Expire</div><div className="num">{exp}</div></div>
+              <div className="kpi"><div className="label" style={{ fontSize: 18, marginBottom: 8 }}>New Snack</div><div className="num">{recent}</div></div>
             </>
           )
         })()}
@@ -39,7 +41,7 @@ export default function StockManagement() {
                 onClick={() => setTab(key)}
                 style={{ cursor:'pointer', fontWeight: tab===key ? 700 : 400, textDecoration: tab===key ? 'underline' : 'none' }}
               >
-                {key === 'all' ? 'All' : key === 'low' ? 'Low stock' : key === 'expiring' ? 'Soon to expire' : key === 'recent' ? 'Recently added' : 'New Trial Snack'}
+                {key === 'all' ? 'All' : key === 'low' ? 'Low stock' : key === 'expiring' ? 'Soon to expire' : key === 'recent' ? 'Recently added' : 'New Snack'}
               </span>
             ))}
           </div>
@@ -91,7 +93,7 @@ export default function StockManagement() {
             <tbody>
               {useMemo(() => {
                 const now = dayjs()
-                return rows.filter(r => {
+                const filtered = rows.filter(r => {
                   if (tab === 'all') return true
                   if (tab === 'low') {
                     const threshold = Math.max(10, Math.ceil(r.purchased * 0.2))
@@ -102,6 +104,8 @@ export default function StockManagement() {
                   if (tab === 'trial') return !!r.trial
                   return true
                 })
+                // Sort by lowest to highest quantity available (current remaining)
+                return filtered.slice().sort((a, b) => a.current - b.current)
               }, [rows, tab]).map((r, i) => (
                 <tr key={i}>
                   <td>{r.name}</td>
