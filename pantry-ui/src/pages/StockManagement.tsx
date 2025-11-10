@@ -1,4 +1,4 @@
-import { FaSearch, FaPlus } from 'react-icons/fa'
+import { FaSearch, FaPlus, FaUpload, FaTrash } from 'react-icons/fa'
 import { useMemo, useRef, useState } from 'react'
 import * as XLSX from 'xlsx'
 import dayjs from 'dayjs'
@@ -14,7 +14,7 @@ export default function StockManagement() {
   const [tab, setTab] = useState<'all' | 'low' | 'expiring' | 'recent' | 'trial'>('all')
   const [showAdd, setShowAdd] = useState(false)
   const stockTypes = ['Packet', 'Box', 'Bottle', 'Can']
-  const purchasers = ['Alya Rahman', 'Lee Wei Ming', 'Nur Izzati', 'Arun Kumar', 'Siti Aisyah', 'Chong Kai', 'Farah Nabila']
+  const purchasers = ['Me', 'Admin', 'Alya Rahman', 'Lee Wei Ming', 'Nur Izzati', 'Arun Kumar', 'Siti Aisyah', 'Chong Kai', 'Farah Nabila']
   const [form, setForm] = useState<{ name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial: boolean }>({
     name: '',
     expiry: '',
@@ -23,7 +23,7 @@ export default function StockManagement() {
     purchased: 0,
     current: 0,
     by: '',
-    trial: true,
+    trial: false,
   })
 
   const handleAdd = () => {
@@ -34,7 +34,7 @@ export default function StockManagement() {
       type: form.type || 'Packet',
       purchased: Number.isFinite(form.purchased) ? Number(form.purchased) : 0,
       current: Number.isFinite(form.current) ? Number(form.current) : 0,
-      by: form.by || purchasers[0],
+      by: form.by || '',
       trial: !!form.trial,
     }
     setRows(prev => [newRow, ...prev])
@@ -87,7 +87,7 @@ export default function StockManagement() {
               </select>
             </div>
             <button onClick={() => setShowAdd(true)} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', borderRadius:8, padding:'10px 14px', color:'#5a5a5a', display:'inline-flex', alignItems:'center', gap:8 }}>
-              <FaPlus style={{ opacity:.8 }} /> Add New Snack
+              <FaPlus style={{ opacity:.8 }} /> New
             </button>
             <input ref={fileRef} type="file" accept=".xlsx,.xls" style={{ display:'none' }} onChange={async (e) => {
               const f = e.target.files?.[0]
@@ -104,7 +104,9 @@ export default function StockManagement() {
                 e.currentTarget.value = ''
               }
             }} />
-            <button onClick={() => fileRef.current?.click()} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Import Excel</button>
+            <button onClick={() => fileRef.current?.click()} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b', display:'inline-flex', alignItems:'center', gap:8 }}>
+              <FaUpload style={{ opacity:.8 }} /> Import Excel
+            </button>
           </div>
         </div>
 
@@ -119,7 +121,7 @@ export default function StockManagement() {
                 <th>Purchase quantity</th>
                 <th>Current remaining</th>
                 <th>Purchased by</th>
-                <th>Actions</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -148,10 +150,13 @@ export default function StockManagement() {
                   <td>{r.current}</td>
                   <td>{r.by}</td>
                   <td>
-                    <div style={{ display:'flex', gap:8 }}>
-                      <button onClick={() => setRows(prev => prev.map(x => x === r ? { ...x, current: x.current + 1 } : x))} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:6, padding:'4px 10px', color:'#6b6b6b' }}>+</button>
-                      <button onClick={() => setRows(prev => prev.map(x => x === r ? { ...x, current: Math.max(0, x.current - 1) } : x))} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:6, padding:'4px 10px', color:'#6b6b6b' }}>-</button>
-                    </div>
+                    <button
+                      onClick={() => setRows(prev => prev.filter(x => x !== r))}
+                      title="Delete"
+                      style={{ border:'none', background:'transparent', borderRadius:0, padding:'4px 6px', color:'#6b6b6b' }}
+                    >
+                      <FaTrash style={{ opacity:.8 }} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -162,8 +167,8 @@ export default function StockManagement() {
           <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.2)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:50 }}>
             <div className="card" style={{ width: 560, maxWidth: '92%' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 8 }}>
-                <h3 style={{ fontSize: 22, margin: 0, fontWeight: 600, color: '#6e6e6e' }}>Add New Snack</h3>
-                <button onClick={() => setShowAdd(false)} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:6, padding:'6px 10px' }}>×</button>
+                <h3 style={{ fontSize: 22, margin: 0, fontWeight: 600, color: '#6e6e6e' }}>Edit Snack</h3>
+                <button onClick={() => setShowAdd(false)} style={{ border:'none', background:'transparent', color:'#8a8a8a', borderRadius:0, padding:'4px 6px', fontSize:20, lineHeight:1 }}>×</button>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
                 <div className="field">
@@ -177,12 +182,32 @@ export default function StockManagement() {
                   </select>
                 </div>
                 <div className="field">
-                  <label>Expiry date</label>
-                  <input type="date" value={form.expiry} onChange={e => setForm({ ...form, expiry: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                  <label>Date of purchase</label>
+                  <input
+                    type={form.purchaseDate ? 'date' : 'text'}
+                    placeholder=""
+                    value={form.purchaseDate}
+                    onFocus={e => (e.currentTarget.type = 'date')}
+                    onBlur={e => {
+                      if (!e.currentTarget.value) e.currentTarget.type = 'text'
+                    }}
+                    onChange={e => setForm({ ...form, purchaseDate: e.target.value })}
+                    style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }}
+                  />
                 </div>
                 <div className="field">
-                  <label>Date of purchase</label>
-                  <input type="date" value={form.purchaseDate} onChange={e => setForm({ ...form, purchaseDate: e.target.value })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                  <label>Expiry date</label>
+                  <input
+                    type={form.expiry ? 'date' : 'text'}
+                    placeholder=""
+                    value={form.expiry}
+                    onFocus={e => (e.currentTarget.type = 'date')}
+                    onBlur={e => {
+                      if (!e.currentTarget.value) e.currentTarget.type = 'text'
+                    }}
+                    onChange={e => setForm({ ...form, expiry: e.target.value })}
+                    style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }}
+                  />
                 </div>
                 <div className="field">
                   <label>Purchase quantity</label>
@@ -195,21 +220,14 @@ export default function StockManagement() {
                 <div className="field">
                   <label>Purchased by</label>
                   <select value={form.by} onChange={e => setForm({ ...form, by: e.target.value })} className="select">
-                    <option value="">Select purchaser</option>
+                    <option value=""></option>
                     {purchasers.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
-                </div>
-                <div className="field" style={{ alignSelf:'end' }}>
-                  <label style={{ visibility:'hidden' }}>flag</label>
-                  <label style={{ display:'flex', alignItems:'center', gap:8, color:'#6b6b6b' }}>
-                    <input type="checkbox" checked={form.trial} onChange={e => setForm({ ...form, trial: e.target.checked })} />
-                    Mark as New Item
-                  </label>
                 </div>
               </div>
               <div style={{ display:'flex', justifyContent:'flex-end', gap:10, marginTop:16 }}>
                 <button onClick={() => setShowAdd(false)} style={{ border:'1px solid #e1e1e1', background:'#fff', color:'#6b6b6b', borderRadius:8, padding:'10px 14px' }}>Cancel</button>
-                <button onClick={handleAdd} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', color:'#5a5a5a', borderRadius:8, padding:'10px 14px' }}>Add Snack</button>
+                <button onClick={handleAdd} style={{ border:'1px solid #e1e1e1', background:'#f2f2f2', color:'#5a5a5a', borderRadius:8, padding:'10px 14px' }}>Save</button>
               </div>
             </div>
           </div>
