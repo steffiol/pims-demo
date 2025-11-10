@@ -24,8 +24,8 @@ export default function App() {
         <aside className="sidebar">
           <div className="brand">&nbsp;</div>
           <ul className="nav">
-            <NavLink to="/home"><FaThLarge /> Home</NavLink>
-            <NavLink to="/" end><FaHome /> Overview</NavLink>
+            <NavLink to="/home"><FaHome /> Home</NavLink>
+            <NavLink to="/" end><FaThLarge /> Overview</NavLink>
             <NavLink to="/stock"><FaBoxes /> Stock Management</NavLink>
             <NavLink to="/reports"><FaChartBar /> Reports</NavLink>
             <NavLink to="/feedback"><FaComments /> Feedback & Polls</NavLink>
