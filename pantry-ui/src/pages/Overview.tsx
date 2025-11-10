@@ -3,9 +3,8 @@ import { FaSearch } from 'react-icons/fa'
 export default function Overview() {
   return (
     <>
-      <h1 className="title">Pantry Inventory Management System</h1>
       <section className="kpis">
-        <div className="kpi"><div className="num">95</div><div className="label">Snacks</div></div>
+        <div className="kpi"><div className="num">95</div><div className="label">Snacks available</div></div>
         <div className="kpi"><div className="num">14</div><div className="label">Low Stock</div></div>
         <div className="kpi"><div className="num">8</div><div className="label">Expiring Soon</div></div>
       </section>
