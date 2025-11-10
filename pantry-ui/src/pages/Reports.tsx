@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import * as XLSX from 'xlsx'
-import { FaDownload } from 'react-icons/fa'
+import { FaUpload } from 'react-icons/fa'
 import { snackRows } from '../data/snacks'
 
 type Row = {
@@ -64,7 +64,7 @@ export default function Reports() {
           })}
         </select>
         <div style={{ flex: 1 }} />
-        <button onClick={exportExcel} style={{ display:'inline-flex', alignItems:'center', gap:8, border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}><FaDownload /> Export Excel</button>
+        <button onClick={exportExcel} style={{ display:'inline-flex', alignItems:'center', gap:8, border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}><FaUpload /> Export Excel</button>
       </div>
 
       <div className="card" style={{ paddingTop: 0 }}>

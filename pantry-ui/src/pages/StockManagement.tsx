@@ -1,10 +1,10 @@
-import { FaSearch, FaPlus, FaUpload, FaTrash } from 'react-icons/fa'
+import { FaSearch, FaPlus, FaTrash, FaDownload } from 'react-icons/fa'
 import { useMemo, useRef, useState } from 'react'
 import * as XLSX from 'xlsx'
 import dayjs from 'dayjs'
 import { snackRows } from '../data/snacks'
 
-type Row = { name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial?: boolean }
+type Row = { name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; price?: number; trial?: boolean }
 
 const initialData: Row[] = snackRows
 
@@ -15,7 +15,7 @@ export default function StockManagement() {
   const [showAdd, setShowAdd] = useState(false)
   const stockTypes = ['Packet', 'Box', 'Bottle', 'Can']
   const purchasers = ['Me', 'Admin', 'Alya Rahman', 'Lee Wei Ming', 'Nur Izzati', 'Arun Kumar', 'Siti Aisyah', 'Chong Kai', 'Farah Nabila']
-  const [form, setForm] = useState<{ name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; trial: boolean }>({
+  const [form, setForm] = useState<{ name: string; expiry: string; purchaseDate: string; type: string; purchased: number; current: number; by: string; price: number; trial: boolean }>({
     name: '',
     expiry: '',
     purchaseDate: '',
@@ -23,6 +23,7 @@ export default function StockManagement() {
     purchased: 0,
     current: 0,
     by: '',
+    price: 0,
     trial: false,
   })
 
@@ -35,6 +36,7 @@ export default function StockManagement() {
       purchased: Number.isFinite(form.purchased) ? Number(form.purchased) : 0,
       current: Number.isFinite(form.current) ? Number(form.current) : 0,
       by: form.by || '',
+      price: Number.isFinite(form.price) ? Number(form.price) : undefined,
       trial: !!form.trial,
     }
     setRows(prev => [newRow, ...prev])
@@ -105,7 +107,7 @@ export default function StockManagement() {
               }
             }} />
             <button onClick={() => fileRef.current?.click()} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b', display:'inline-flex', alignItems:'center', gap:8 }}>
-              <FaUpload style={{ opacity:.8 }} /> Import Excel
+              <FaDownload style={{ opacity:.8 }} /> Import Excel
             </button>
           </div>
         </div>
@@ -210,12 +212,19 @@ export default function StockManagement() {
                   />
                 </div>
                 <div className="field">
-                  <label>Purchase quantity</label>
+                  <label>Quantity</label>
                   <input type="number" min={0} value={form.purchased} onChange={e => setForm({ ...form, purchased: Number(e.target.value) })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
                 </div>
                 <div className="field">
-                  <label>Current remaining</label>
-                  <input type="number" min={0} value={form.current} onChange={e => setForm({ ...form, current: Number(e.target.value) })} style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }} />
+                  <label>Price (RM)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={form.price}
+                    onChange={e => setForm({ ...form, price: Number(e.target.value) })}
+                    style={{ border:'1px solid #e1e1e1', borderRadius:8, padding:'8px 10px' }}
+                  />
                 </div>
                 <div className="field">
                   <label>Purchased by</label>
