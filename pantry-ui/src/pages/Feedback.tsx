@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
 
-type Comment = { by: string; text: string }
+type Comment = { by: string; text: string; likes?: number; hearts?: number; downs?: number; neutrals?: number }
 type Post = { id: string; type: 'post'; title: string; body: string; likes: number; hearts: number; downs: number; neutrals: number; comments: Comment[] }
 type PollOption = { label: string; votes: number }
 type Poll = { id: string; type: 'poll'; question: string; options: PollOption[]; comments: Comment[] }
@@ -169,20 +169,44 @@ function Comments({ item, setItems }: { item: Item; setItems: React.Dispatch<Rea
     if (!text) return
     setItems(prev => prev.map(x => {
       if (x !== item) return x
-      if (x.type === 'post') return { ...x, comments: [...x.comments, { by: 'Employee', text }] }
-      return { ...x, comments: [...x.comments, { by: 'Employee', text }] }
+      // Add new comment with zeroed reactions
+      return { ...x, comments: [...x.comments, { by: 'Employee', text, likes: 0, hearts: 0, downs: 0, neutrals: 0 }] }
     }))
     setText('')
   }
-  const comments = item.type === 'post' ? item.comments : item.comments
+  const comments = item.comments
   return (
     <div style={{ marginTop: 12 }}>
       <div style={{ color:'#6b6b6b', marginBottom: 8 }}>Comments</div>
-      {comments.map((c, idx) => (
-        <div key={idx} style={{ padding:'8px 0', borderTop: idx ? '1px solid #eee' : 'none', color:'#666' }}>
-          <strong style={{ color:'#555' }}>{c.by}:</strong> {c.text}
-        </div>
-      ))}
+      {comments.map((c, idx) => {
+        const likes = c.likes ?? 0
+        const hearts = c.hearts ?? 0
+        const downs = c.downs ?? 0
+        const neutrals = c.neutrals ?? 0
+        return (
+          <div key={idx} style={{ padding:'8px 0', borderTop: idx ? '1px solid #eee' : 'none', color:'#666' }}>
+            <div><strong style={{ color:'#555' }}>{c.by}:</strong> {c.text}</div>
+            <div className="reactions" style={{ marginTop: 6 }}>
+              <button onClick={() => setItems(prev => prev.map(x => {
+                if (x !== item) return x
+                return { ...x, comments: x.comments.map((cc, j) => j===idx ? { ...cc, likes: (cc.likes ?? 0) + 1 } : cc) }
+              }))}>👍 {likes}</button>
+              <button onClick={() => setItems(prev => prev.map(x => {
+                if (x !== item) return x
+                return { ...x, comments: x.comments.map((cc, j) => j===idx ? { ...cc, hearts: (cc.hearts ?? 0) + 1 } : cc) }
+              }))}>❤️ {hearts}</button>
+              <button onClick={() => setItems(prev => prev.map(x => {
+                if (x !== item) return x
+                return { ...x, comments: x.comments.map((cc, j) => j===idx ? { ...cc, downs: (cc.downs ?? 0) + 1 } : cc) }
+              }))}>👎 {downs}</button>
+              <button onClick={() => setItems(prev => prev.map(x => {
+                if (x !== item) return x
+                return { ...x, comments: x.comments.map((cc, j) => j===idx ? { ...cc, neutrals: (cc.neutrals ?? 0) + 1 } : cc) }
+              }))}>😐 {neutrals}</button>
+            </div>
+          </div>
+        )
+      })}
       <div style={{ display:'flex', gap:8, marginTop: 8 }}>
         <input value={text} onChange={e => setText(e.target.value)} placeholder="Add a comment" style={{ flex:1, border:'1px solid #d8d8d8', borderRadius:8, padding:'10px 12px' }} />
         <button onClick={submit} style={{ border:'1px solid #e1e1e1', background:'#fff', borderRadius:8, padding:'10px 14px', color:'#6b6b6b' }}>Send</button>
