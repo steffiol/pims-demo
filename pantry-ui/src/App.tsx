@@ -1,12 +1,13 @@
 import './index.css'
 import { NavLink, Routes, Route, BrowserRouter } from 'react-router-dom'
-import { FaHome, FaBoxes, FaChartBar, FaComments, FaBullhorn, FaWrench } from 'react-icons/fa'
+import { FaThLarge, FaHome, FaBoxes, FaChartBar, FaComments, FaBullhorn, FaWrench } from 'react-icons/fa'
 import Overview from './pages/Overview'
 import StockManagement from './pages/StockManagement'
 import Reports from './pages/Reports'
 import Feedback from './pages/Feedback'
 import Announcements from './pages/Announcements'
 import AdminSettings from './pages/AdminSettings'
+import Home from './pages/Home'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <aside className="sidebar">
           <div className="brand">&nbsp;</div>
           <ul className="nav">
+            <NavLink to="/home"><FaThLarge /> Home</NavLink>
             <NavLink to="/" end><FaHome /> Overview</NavLink>
             <NavLink to="/stock"><FaBoxes /> Stock Management</NavLink>
             <NavLink to="/reports"><FaChartBar /> Reports</NavLink>
@@ -33,6 +35,7 @@ export default function App() {
         </aside>
         <main className="main">
           <Routes>
+            <Route path="/home" element={<Home />} />
             <Route path="/" element={<Overview />} />
             <Route path="/stock" element={<StockManagement />} />
             <Route path="/reports" element={<Reports />} />
