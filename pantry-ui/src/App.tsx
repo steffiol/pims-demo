@@ -17,10 +17,15 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="role-bar">
-        <div className="seg">
-          <button className={role==='employee' ? 'active' : ''} onClick={() => setRole('employee')}>Employee</button>
-          <button className={role==='admin' ? 'active' : ''} onClick={() => setRole('admin')}>Admin</button>
-        </div>
+        <span className="toggle-label">Employee</span>
+        <button
+          aria-label="Toggle role"
+          className={`toggle ${role==='admin' ? 'on' : ''}`}
+          onClick={() => setRole(role === 'admin' ? 'employee' : 'admin')}
+        >
+          <span className="knob" />
+        </button>
+        <span className="toggle-label">Admin</span>
       </div>
       <div className="browser-chrome">
         <div className="chrome-dots">
