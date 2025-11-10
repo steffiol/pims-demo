@@ -1,7 +1,4 @@
 import { FaSearch, FaHome, FaBoxes, FaChartBar, FaComments, FaBullhorn, FaWrench } from 'react-icons/fa'
-import dayjs from 'dayjs'
-import { snackRows } from '../data/snacks'
-import { getExpiryDays } from '../utils/config'
 import { Link } from 'react-router-dom'
 
 export default function Overview() {
