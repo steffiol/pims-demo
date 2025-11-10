@@ -8,10 +8,20 @@ import Feedback from './pages/Feedback'
 import Announcements from './pages/Announcements'
 import AdminSettings from './pages/AdminSettings'
 import Home from './pages/Home'
+import { useEffect, useState } from 'react'
 
 export default function App() {
+  const [role, setRole] = useState<'admin' | 'employee'>(() => (localStorage.getItem('role') as any) || 'admin')
+  useEffect(() => { localStorage.setItem('role', role) }, [role])
+  const isAdmin = role === 'admin'
   return (
     <BrowserRouter>
+      <div className="role-bar">
+        <div className="seg">
+          <button className={role==='employee' ? 'active' : ''} onClick={() => setRole('employee')}>Employee</button>
+          <button className={role==='admin' ? 'active' : ''} onClick={() => setRole('admin')}>Admin</button>
+        </div>
+      </div>
       <div className="browser-chrome">
         <div className="chrome-dots">
           <div className="chrome-dot"></div>
@@ -25,12 +35,12 @@ export default function App() {
           <div className="brand">&nbsp;</div>
           <ul className="nav">
             <NavLink to="/home"><FaHome /> Home</NavLink>
-            <NavLink to="/" end><FaThLarge /> Overview</NavLink>
-            <NavLink to="/stock"><FaBoxes /> Stock Management</NavLink>
-            <NavLink to="/reports"><FaChartBar /> Reports</NavLink>
+            {isAdmin && <NavLink to="/" end><FaThLarge /> Overview</NavLink>}
+            {isAdmin && <NavLink to="/stock"><FaBoxes /> Stock Management</NavLink>}
+            {isAdmin && <NavLink to="/reports"><FaChartBar /> Reports</NavLink>}
             <NavLink to="/feedback"><FaComments /> Feedback & Polls</NavLink>
             <NavLink to="/announcements"><FaBullhorn /> Announcements</NavLink>
-            <NavLink to="/settings"><FaWrench /> Admin Settings</NavLink>
+            {isAdmin && <NavLink to="/settings"><FaWrench /> Admin Settings</NavLink>}
           </ul>
         </aside>
         <main className="main">
