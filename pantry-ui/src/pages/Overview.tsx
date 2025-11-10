@@ -1,17 +1,8 @@
-import { FaSearch, FaHome, FaBoxes, FaChartBar, FaComments, FaBullhorn, FaWrench } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { FaSearch } from 'react-icons/fa'
 
 export default function Overview() {
   return (
     <>
-      <div className="home-grid">
-        <Link to="/" className="home-card"><FaHome /> <div className="title">Overview</div></Link>
-        <Link to="/stock" className="home-card"><FaBoxes /> <div className="title">Stock Management</div></Link>
-        <Link to="/reports" className="home-card"><FaChartBar /> <div className="title">Reports</div></Link>
-        <Link to="/feedback" className="home-card"><FaComments /> <div className="title">Feedback & Polls</div></Link>
-        <Link to="/announcements" className="home-card"><FaBullhorn /> <div className="title">Announcements</div></Link>
-        <Link to="/settings" className="home-card"><FaWrench /> <div className="title">Admin Settings</div></Link>
-      </div>
       <h1 className="title">Pantry Inventory Management System</h1>
       <section className="kpis">
         <div className="kpi"><div className="num">95</div><div className="label">Snacks</div></div>
